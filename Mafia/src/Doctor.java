@@ -4,6 +4,7 @@ public class Doctor extends Role{
 
     public Doctor() {
         // Constructor
+        super("Doctor", "Save a player from death", "Save", "path/to/doctor/icon.png");
         savedPlayer = null; // Initially, no player is saved
     }
 
@@ -21,8 +22,16 @@ public class Doctor extends Role{
     public Player getSavedPlayer() {
         return savedPlayer;
     }
+    public void setSavedPlayer(Player savedPlayer) {
+        this.savedPlayer = savedPlayer;
+    }
 
     public void reset(){
         savedPlayer = null; // Reset the saved player for the next round
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "\n(Saved Player: " + (savedPlayer != null ? savedPlayer.getName() : "None") + ")";
     }
 }

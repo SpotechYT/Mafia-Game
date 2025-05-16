@@ -11,7 +11,8 @@ public class Player {
     // Constructor
     public Player(String name, int votes, String pathToIcon) {
         this.name = name;
-        this.role = null; // Default to civilian
+        Civilian civilian = new Civilian(); // Default role is civilian 
+        this.role = civilian;
         this.alive = true; // Default to alive
         this.votes = votes;
         this.pathToIcon = pathToIcon;
