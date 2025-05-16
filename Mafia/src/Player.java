@@ -3,19 +3,22 @@ public class Player {
     * Variables: name, role, alive, votes, PathToIcon
     */
     private String name;
-    private String role;
+    private Role role;
     private boolean alive;
     private int votes;
     private String pathToIcon;
 
+    // Constructor
     public Player(String name, int votes, String pathToIcon) {
         this.name = name;
-        this.role = "civilian"; // Default to civilian
+        this.role = null; // Default to civilian
         this.alive = true; // Default to alive
         this.votes = votes;
         this.pathToIcon = pathToIcon;
     }
 
+
+    //getters and setters
     public String getName() {
         return name;
     }
@@ -24,11 +27,11 @@ public class Player {
         this.name = name;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
