@@ -4,7 +4,7 @@ public class Doctor extends Role{
 
     public Doctor() {
         // Constructor
-        super("Doctor", "Save a player from death", "Save", "path/to/doctor/icon.png");
+        super("Doctor", "Save a player from death", "Save", "Graphics/doctoricon.png");
         savedPlayer = null; // Initially, no player is saved
     }
 

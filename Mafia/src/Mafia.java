@@ -3,7 +3,7 @@
 public class Mafia extends Role{
     private Player target;
     public Mafia() {
-        super("Mafia", "Kill all civilians", "Kill", "path/to/mafia/icon.png");
+        super("Mafia", "Kill all civilians", "Kill", "Graphics/mafiaIcon.png");
         target = null; // Initially, no target
     }
     public Player getTarget() {
