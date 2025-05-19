@@ -1,9 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import java.awt.Color;
 
 public class GamePanel extends JPanel {
 
@@ -12,7 +10,6 @@ public class GamePanel extends JPanel {
     public GamePanel() {
         // Set layout
         setLayout(new BorderLayout());
-        setBackground(new Color(128, 128, 128));
 
         // Create a top panel for the back button
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
