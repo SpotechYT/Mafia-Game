@@ -1,21 +1,22 @@
 
 import java.awt.*;
+import java.util.function.Consumer;
 import javax.swing.*;
 
 public class JoinRoom extends JPanel {
 
-    // Top UI components
     public JButton backButton;
     public JLabel ipLabel;
 
-    // Room discovery (left panel)
     public DefaultListModel<String> roomListModel;
     public JList<String> roomList;
     public JButton refreshButton;
 
-    // Host room UI (right panel)
     public JTextField roomNameField;
     public JButton createRoomButton;
+
+    public DefaultListModel<String> playerListModel;
+    public JList<String> playerList;
 
     public JoinRoom() {
         setLayout(new BorderLayout());
@@ -47,20 +48,31 @@ public class JoinRoom extends JPanel {
 
         centerPanel.add(leftPanel);
 
-        // RIGHT: Host Room Form
+        // RIGHT: Host Room Form + Player List
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         rightPanel.setBorder(BorderFactory.createTitledBorder("Host a Room"));
 
+        // Room creation fields
         roomNameField = new JTextField();
         roomNameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-
         createRoomButton = new JButton("Create Room");
 
         rightPanel.add(new JLabel("Room Name:"));
         rightPanel.add(roomNameField);
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(createRoomButton);
+        rightPanel.add(Box.createVerticalStrut(20));
+
+        // Player List
+        playerListModel = new DefaultListModel<>();
+        playerList = new JList<>(playerListModel);
+        JScrollPane playerScrollPane = new JScrollPane(playerList);
+        playerScrollPane.setPreferredSize(new Dimension(200, 150));
+
+        rightPanel.add(new JLabel("Players in Room:"));
+        rightPanel.add(playerScrollPane);
+
         rightPanel.add(Box.createVerticalGlue());
 
         centerPanel.add(rightPanel);
@@ -68,17 +80,11 @@ public class JoinRoom extends JPanel {
         add(centerPanel, BorderLayout.CENTER);
     }
 
-    // ====== METHODS TO IMPLEMENT YOUR NETWORKING LOGIC ======
-    /**
-     * Set the user's IP in the top label
-     */
+    // ====== Utility Methods ======
     public void setYourIp(String ip) {
         ipLabel.setText("Your IP: " + ip);
     }
 
-    /**
-     * Add a discovered room to the list
-     */
     public void addDiscoveredRoom(String roomName, String ip) {
         String entry = roomName + " - " + ip;
         if (!roomListModel.contains(entry)) {
@@ -86,16 +92,10 @@ public class JoinRoom extends JPanel {
         }
     }
 
-    /**
-     * Clear all discovered rooms
-     */
     public void clearDiscoveredRooms() {
         roomListModel.clear();
     }
 
-    /**
-     * Get selected room's IP from the list
-     */
     public String getSelectedRoomIp() {
         String selected = roomList.getSelectedValue();
         if (selected != null && selected.contains(" - ")) {
@@ -104,10 +104,41 @@ public class JoinRoom extends JPanel {
         return null;
     }
 
-    /**
-     * Get entered room name for hosting
-     */
     public String getEnteredRoomName() {
         return roomNameField.getText().trim();
+    }
+
+    public void addPlayerToList(String playerName) {
+        if (!playerListModel.contains(playerName)) {
+            playerListModel.addElement(playerName);
+        }
+    }
+
+    public void removePlayerFromList(String playerName) {
+        playerListModel.removeElement(playerName);
+    }
+
+    public void clearPlayerList() {
+        playerListModel.clear();
+    }
+
+    // Optional callbacks
+    public void onRefreshRooms(Runnable callback) {
+        refreshButton.addActionListener(e -> {
+            if (callback != null) {
+                callback.run();
+            }
+        });
+    }
+
+    public void onCreateRoom(Consumer<String> callback) {
+        createRoomButton.addActionListener(e -> {
+            String name = getEnteredRoomName();
+            if (!name.isEmpty() && callback != null) {
+                callback.accept(name);
+            } else {
+                JOptionPane.showMessageDialog(this, "Please enter a room name.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 }
