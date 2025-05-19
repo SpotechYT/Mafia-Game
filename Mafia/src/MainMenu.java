@@ -3,6 +3,7 @@ import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import java.awt.Color;
 
 public class MainMenu extends JPanel {
 
@@ -11,6 +12,7 @@ public class MainMenu extends JPanel {
 
     public MainMenu() {
         setLayout(new BorderLayout());
+        setBackground(new Color(128, 128, 128));
 
         JLabel label = new JLabel("The Mafia Game", JLabel.CENTER);
         add(label, BorderLayout.NORTH);
