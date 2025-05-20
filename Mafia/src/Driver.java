@@ -3,7 +3,6 @@ import java.awt.*;
 import javax.swing.*;
 
 public class Driver {
-    private String playerName = "Player" + (int) (Math.random() * 1000);
 
     // Create the CardLayout container
     static CardLayout cardLayout = new CardLayout();
