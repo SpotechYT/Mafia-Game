@@ -1,7 +1,9 @@
 
 import java.awt.*;
+import java.io.IOException;
 import java.net.*;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.function.Consumer;
 import javax.swing.*;
 
@@ -114,8 +116,8 @@ public class JoinRoom extends JPanel {
         return null;
     }
 
-    public void addDiscoveredRoom(String roomName, String ip) {
-        String entry = roomName + " - " + ip;
+    public void addDiscoveredRoom(String roomInfo) {
+        String entry = roomInfo;
         if (!roomListModel.contains(entry)) {
             roomListModel.addElement(entry);
         }
@@ -143,6 +145,15 @@ public class JoinRoom extends JPanel {
     public void onRefreshRooms(Runnable callback) {
         refreshButton.addActionListener(e -> {
             if (callback != null) {
+                clearPlayerList();
+                clearDiscoveredRooms();
+                try {
+                    List<String> rooms;
+                    rooms = RoomDiscovery.discoverRooms();
+                    for (String room : rooms) {
+                        addDiscoveredRoom(room);
+                    }
+                } catch (IOException ex) {}
                 callback.run();
             }
         });
@@ -153,6 +164,9 @@ public class JoinRoom extends JPanel {
             String name = "Room";
             if (!name.isEmpty() && callback != null) {
                 callback.accept(name);
+                try {
+                    RoomHost host = new RoomHost(name, 5000);
+                } catch (IOException ex) {}
             } else {
                 JOptionPane.showMessageDialog(this, "Please enter a room name.", "Error", JOptionPane.ERROR_MESSAGE);
             }
