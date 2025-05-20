@@ -3,42 +3,49 @@ import java.awt.*;
 import javax.swing.*;
 
 public class Driver {
+    private String playerName = "Player" + (int) (Math.random() * 1000);
+
+    // Create the CardLayout container
+    static CardLayout cardLayout = new CardLayout();
+    static JPanel mainPanel = new JPanel(cardLayout);
+
     public static void main(String[] args) {
+        Jframes();
+
+        //Game game = new Game();
+        //game.startGame();
+    }
+
+    public static void Jframes(){
         // Create the frame
         JFrame frame = new JFrame("Mafia");
         frame.setSize(1280, 720);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
 
-
-        // Create the CardLayout container
-        CardLayout cardLayout = new CardLayout();
-        JPanel mainPanel = new JPanel(cardLayout);
-
         // Create instances of panels
         MainMenu mainMenu = new MainMenu();
+        JoinRoom joinRoom = new JoinRoom();
         GamePanel gamePanel = new GamePanel();
         SettingPanel settingPanel = new SettingPanel();
 
         // Add panels to the card layout
         mainPanel.add(mainMenu, "MainMenu");
+        mainPanel.add(joinRoom, "JoinRoom");
         mainPanel.add(gamePanel, "GamePanel");
         mainPanel.add(settingPanel, "SettingPanel");
 
-        // Switch to GamePanel when "Play" is clicked
-        mainMenu.playButton.addActionListener(e -> cardLayout.show(mainPanel, "GamePanel"));
-
-        // Switch to SettingPanel when "Settings" is clicked
-        mainMenu.settingsButton.addActionListener(e -> cardLayout.show(mainPanel, "SettingPanel"));
-
-        // Go back to MainMenu when "Back" is clicked in the game
-        gamePanel.backButton.addActionListener(e -> cardLayout.show(mainPanel, "MainMenu"));
-
-        // Go back to MainMenu when "Back" is clicked in settings
-        settingPanel.backButton.addActionListener(e -> cardLayout.show(mainPanel, "MainMenu"));
+        linkButton(mainMenu.playButton, "JoinRoom");
+        linkButton(mainMenu.settingsButton, "SettingPanel");
+        linkButton(joinRoom.backButton, "MainMenu");
+        linkButton(settingPanel.backButton, "MainMenu");
 
         // Set the content pane
         frame.setContentPane(mainPanel);
         frame.setVisible(true);
+    }
+
+    public static void linkButton(JButton button, String panelName) {
+        button.addActionListener(e -> cardLayout.show(mainPanel, panelName));
     }
 }
