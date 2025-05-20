@@ -6,11 +6,8 @@ public class SettingPanel extends JPanel {
 
     public JButton backButton;
     public JButton nameButton;
-    public JTextPane nameTextPane;
-    public JButton newName;
     public JPanel centerPanel;
     public JPanel rightPanel;
-    public JTextArea defaultTextArea;
 
     public SettingPanel() {
         // Set layout
@@ -36,33 +33,34 @@ public class SettingPanel extends JPanel {
         centerPanel.add(leftPanel);
 
         rightPanel = new JPanel(new BorderLayout());
-        defaultTextArea = new JTextArea("Click on a setting");
-        rightPanel.add(defaultTextArea, BorderLayout.CENTER);
+        rightPanel.add(new JLabel("Click on a setting"), BorderLayout.NORTH);
         centerPanel.add(rightPanel);
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // Add action listener for nameButton here
         
-            nameButton.addActionListener(e -> {
-                rightPanel.removeAll();
-                nameTextPane = new JTextPane();
-                rightPanel.add(nameTextPane, BorderLayout.NORTH);
-                newName = new JButton("Change");
-                newName.addActionListener(ev -> {
-                    resetSettings();
-                });
-                rightPanel.add(new JScrollPane(newName), BorderLayout.CENTER);
-                rightPanel.revalidate();
-                rightPanel.repaint();
-
+        nameButton.addActionListener(e -> {
+            rightPanel.removeAll();
+            JTextField nameTextPane = new JTextField("Enter your name");
+            nameTextPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+            rightPanel.add(nameTextPane, BorderLayout.NORTH);
+            JButton newName = new JButton("Change");
+            newName.addActionListener(ev -> {
+                String name = nameTextPane.getText();
+                //code to change the name
+                resetSettings();
             });
+            rightPanel.add(new JScrollPane(newName), BorderLayout.CENTER);
+            rightPanel.revalidate();
+            rightPanel.repaint();
+
+        });
         
     }
 
     public void resetSettings(){
         rightPanel.removeAll();
-        rightPanel.add(defaultTextArea, BorderLayout.CENTER);
+        rightPanel.add(new JLabel("Click on a setting"), BorderLayout.NORTH);
         rightPanel.revalidate();
         rightPanel.repaint();
     }
