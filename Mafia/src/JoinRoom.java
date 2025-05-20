@@ -1,7 +1,7 @@
 
 import java.awt.*;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
+import java.util.Enumeration;
 import java.util.function.Consumer;
 import javax.swing.*;
 
@@ -83,15 +83,36 @@ public class JoinRoom extends JPanel {
     }
 
     // ====== Utility Methods ======
+    // public String getYourIp() {
+    //     try {
+    //         InetAddress localHost = InetAddress.getLocalHost();
+    //         String ipAddress = localHost.getHostAddress();
+    //         return ipAddress;
+    //     } catch (UnknownHostException e) {
+    //         e.printStackTrace();
+    //         return null;
+    //     }
+    // }
     public String getYourIp() {
         try {
-            InetAddress localHost = InetAddress.getLocalHost();
-            String ipAddress = localHost.getHostAddress();
-            return ipAddress;
-        } catch (UnknownHostException e) {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+                // Skip loopback and down interfaces
+                if (iface.isLoopback() || !iface.isUp()) continue;
+
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    if (addr instanceof Inet4Address && !addr.isLoopbackAddress()) {
+                        return addr.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException e) {
             e.printStackTrace();
-            return null;
         }
+        return null;
     }
 
     public void setYourIp(String ip) {
