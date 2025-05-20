@@ -1,5 +1,7 @@
 
 import java.awt.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.function.Consumer;
 import javax.swing.*;
 
@@ -27,7 +29,7 @@ public class JoinRoom extends JPanel {
         backButton = new JButton("Back");
         topPanel.add(backButton, BorderLayout.WEST);
 
-        ipLabel = new JLabel("Your IP: 0.0.0.0", SwingConstants.CENTER);
+        ipLabel = new JLabel("Your IP: " + getYourIp(), SwingConstants.CENTER);
         ipLabel.setFont(ipLabel.getFont().deriveFont(Font.BOLD, 14f));
         topPanel.add(ipLabel, BorderLayout.CENTER);
 
@@ -81,6 +83,17 @@ public class JoinRoom extends JPanel {
     }
 
     // ====== Utility Methods ======
+    public String getYourIp() {
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            String ipAddress = localHost.getHostAddress();
+            return ipAddress;
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public void setYourIp(String ip) {
         ipLabel.setText("Your IP: " + ip);
     }
