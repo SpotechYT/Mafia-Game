@@ -61,7 +61,6 @@ public class JoinRoom extends JPanel {
         createRoomButton = new JButton("Create Room");
 
         rightPanel.add(new JLabel("Room Name:"));
-        rightPanel.add(roomNameField);
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(createRoomButton);
         rightPanel.add(Box.createVerticalStrut(20));
@@ -115,10 +114,6 @@ public class JoinRoom extends JPanel {
         return null;
     }
 
-    public void setYourIp(String ip) {
-        ipLabel.setText("Your IP: " + ip);
-    }
-
     public void addDiscoveredRoom(String roomName, String ip) {
         String entry = roomName + " - " + ip;
         if (!roomListModel.contains(entry)) {
@@ -128,18 +123,6 @@ public class JoinRoom extends JPanel {
 
     public void clearDiscoveredRooms() {
         roomListModel.clear();
-    }
-
-    public String getSelectedRoomIp() {
-        String selected = roomList.getSelectedValue();
-        if (selected != null && selected.contains(" - ")) {
-            return selected.split(" - ")[1].trim();
-        }
-        return null;
-    }
-
-    public String getEnteredRoomName() {
-        return roomNameField.getText().trim();
     }
 
     public void addPlayerToList(String playerName) {
@@ -167,7 +150,7 @@ public class JoinRoom extends JPanel {
 
     public void onCreateRoom(Consumer<String> callback) {
         createRoomButton.addActionListener(e -> {
-            String name = getEnteredRoomName();
+            String name = "Room";
             if (!name.isEmpty() && callback != null) {
                 callback.accept(name);
             } else {
