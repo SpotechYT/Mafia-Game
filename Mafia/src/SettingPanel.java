@@ -32,7 +32,8 @@ public class SettingPanel extends JPanel {
 
         centerPanel.add(leftPanel);
 
-        rightPanel = new JPanel(new BorderLayout());
+        rightPanel = new JPanel();
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         rightPanel.add(new JLabel("Click on a setting"), BorderLayout.NORTH);
         centerPanel.add(rightPanel);
 
@@ -42,15 +43,21 @@ public class SettingPanel extends JPanel {
         nameButton.addActionListener(e -> {
             rightPanel.removeAll();
             JTextField nameTextPane = new JTextField("Enter your name");
-            nameTextPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
-            rightPanel.add(nameTextPane, BorderLayout.NORTH);
+            nameTextPane.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
+            nameTextPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+            nameTextPane.setMinimumSize(new Dimension(Integer.MAX_VALUE, 30));
+            rightPanel.add(nameTextPane);
             JButton newName = new JButton("Change");
             newName.addActionListener(ev -> {
                 String name = nameTextPane.getText();
                 //code to change the name
                 resetSettings();
             });
-            rightPanel.add(new JScrollPane(newName), BorderLayout.CENTER);
+            newName.setPreferredSize(new Dimension(100, 50));
+            newName.setMaximumSize(new Dimension(100, 50));
+            newName.setMinimumSize(new Dimension(100, 50));
+            newName.setAlignmentX(Component.CENTER_ALIGNMENT);
+            rightPanel.add(newName);
             rightPanel.revalidate();
             rightPanel.repaint();
 
