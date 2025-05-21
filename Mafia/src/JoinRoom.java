@@ -80,10 +80,12 @@ public class JoinRoom extends JPanel {
 
         // Room creation fields
         roomNameField = new JTextField();
+        roomNameField.setText(roomName);
         roomNameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         createRoomButton = new JButton("Create Room");
 
         rightPanel.add(new JLabel("Room Name:"));
+        rightPanel.add(roomNameField);
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(createRoomButton);
         rightPanel.add(Box.createVerticalStrut(20));
@@ -197,8 +199,7 @@ public class JoinRoom extends JPanel {
 
     public void onCreateRoom() {
         String name = roomName;
-        System.out.println(roomName);
-        roomNameField.setText(name);
+        System.out.println(name);
 
         if (name == null || name.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Room name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
