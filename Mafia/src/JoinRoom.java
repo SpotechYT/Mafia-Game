@@ -4,12 +4,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.Enumeration;
-import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -22,7 +24,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 public class JoinRoom extends JPanel {
 
@@ -38,6 +39,7 @@ public class JoinRoom extends JPanel {
     public JButton refreshButton;
 
     public JTextField roomNameField;
+    public JTextField ipAdField;
     public JButton createRoomButton;
 
     public DefaultListModel<String> playerListModel;
@@ -63,9 +65,17 @@ public class JoinRoom extends JPanel {
 
         // LEFT: Discovered Rooms List
         JPanel leftPanel = new JPanel(new BorderLayout());
+
         roomListModel = new DefaultListModel<>();
         roomList = new JList<>(roomListModel);
+
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setBorder(BorderFactory.createTitledBorder("Available Rooms"));
+        ipAdField = new JTextField();
+        ipAdField.setText("255.255.255.255");
+        ipAdField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        leftPanel.add(new JLabel("IP address:"));
+        leftPanel.add(ipAdField);
         leftPanel.add(new JScrollPane(roomList), BorderLayout.CENTER);
 
         refreshButton = new JButton("Refresh");
@@ -105,13 +115,11 @@ public class JoinRoom extends JPanel {
 
         refreshButton.addActionListener(e -> {
             // This is your function body
-            System.out.println("Refresh");
             onRefreshRooms();
         });
 
         createRoomButton.addActionListener(e -> {
             // This is your function body
-            System.out.println("Create Room");
             onCreateRoom();
         });
 
@@ -178,27 +186,24 @@ public class JoinRoom extends JPanel {
 
     // Optional callbacks
     public void onRefreshRooms() {
+        System.out.println("Refresh");
         clearPlayerList();
         clearDiscoveredRooms();
 
-        // Run discovery in a background thread to avoid UI freezing
-        new Thread(() -> {
-            try {
-                List<String> rooms = RoomDiscovery.discoverRooms();
-                // Update UI on the Event Dispatch Thread
-                SwingUtilities.invokeLater(() -> {
-                    for (String room : rooms) {
-                        addDiscoveredRoom(room);
-                    }
-                });
-            } catch (IOException ex) {
-                ex.printStackTrace(); // or show an error message
-            }
-        });
-    }    
+        try {
+            String ip = ipAdField.getText();
+            String request = "DISCOVER_ROOMS";
+            String response = sendRequest(ip, request);
+            addDiscoveredRoom(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to discover rooms.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     public void onCreateRoom() {
-        String name = roomName;
+        System.out.println("Create Room");
+        String name = roomNameField.getText();
         System.out.println(name);
 
         if (name == null || name.trim().isEmpty()) {
@@ -212,5 +217,37 @@ public class JoinRoom extends JPanel {
             ex.printStackTrace(); // Log the error
             JOptionPane.showMessageDialog(this, "Failed to create room.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    // Networking Stuff for contacting other players
+    public static String sendRequest(String ipAd, String request) throws IOException {
+        System.out.println("Discovering Rooms...");
+        String resp = "";
+        DatagramSocket socket = new DatagramSocket();
+        socket.setBroadcast(true);
+
+        byte[] sendData = request.getBytes();
+
+        DatagramPacket sendPacket = new DatagramPacket(
+                sendData, sendData.length, InetAddress.getByName(ipAd), 8888);
+        socket.send(sendPacket);
+
+        socket.setSoTimeout(2000);  // Wait 2 seconds for responses
+
+        try {
+            while (true) {
+                byte[] recvBuf = new byte[256];
+                DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
+                socket.receive(receivePacket);
+                String response = new String(receivePacket.getData(), 0, receivePacket.getLength());
+                resp = response;
+            }
+        } catch (SocketTimeoutException e) {
+            // Timeout reached, stop listening
+            System.out.println("Discovery Timed Out!");
+        }
+
+        socket.close();
+        return resp;
     }
 }
