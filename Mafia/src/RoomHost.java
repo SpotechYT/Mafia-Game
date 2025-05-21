@@ -9,6 +9,7 @@ public class RoomHost {
     private boolean running = true;
 
     public RoomHost(String roomName, int tcpPort) throws IOException {
+        System.out.println("Starting room host on port " + tcpPort + " with name: " + roomName);
         this.roomName = roomName;
         this.tcpPort = tcpPort;
         serverSocket = new ServerSocket(tcpPort);
@@ -19,6 +20,7 @@ public class RoomHost {
 
     private void startDiscoveryListener() {
         try (DatagramSocket socket = new DatagramSocket(8888)) {
+            System.out.println("Discovery listener started on UDP port 8888");
             byte[] buf = new byte[256];
             while (running) {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
