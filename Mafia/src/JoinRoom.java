@@ -1,13 +1,34 @@
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.io.IOException;
-import java.net.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.function.Consumer;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 public class JoinRoom extends JPanel {
+
+    private String playerName = "Player" + (int) (Math.random() * 1000);
+    private String roomName = playerName + "'s Room";
+    private RoomHost currentHost; // Keep this at class level to retain reference
 
     public JButton backButton;
     public JLabel ipLabel;
@@ -59,10 +80,12 @@ public class JoinRoom extends JPanel {
 
         // Room creation fields
         roomNameField = new JTextField();
+        roomNameField.setText(roomName);
         roomNameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         createRoomButton = new JButton("Create Room");
 
         rightPanel.add(new JLabel("Room Name:"));
+        rightPanel.add(roomNameField);
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(createRoomButton);
         rightPanel.add(Box.createVerticalStrut(20));
@@ -79,6 +102,18 @@ public class JoinRoom extends JPanel {
         rightPanel.add(Box.createVerticalGlue());
 
         centerPanel.add(rightPanel);
+
+        refreshButton.addActionListener(e -> {
+            // This is your function body
+            System.out.println("Refresh");
+            onRefreshRooms();
+        });
+
+        createRoomButton.addActionListener(e -> {
+            // This is your function body
+            System.out.println("Create Room");
+            onCreateRoom();
+        });
 
         add(centerPanel, BorderLayout.CENTER);
     }
@@ -132,34 +167,40 @@ public class JoinRoom extends JPanel {
     }
 
     // Optional callbacks
-    public void onRefreshRooms(Runnable callback) {
-        refreshButton.addActionListener(e -> {
-            if (callback != null) {
-                clearPlayerList();
-                clearDiscoveredRooms();
-                try {
-                    List<String> rooms;
-                    rooms = RoomDiscovery.discoverRooms();
+    public void onRefreshRooms() {
+        clearPlayerList();
+        clearDiscoveredRooms();
+
+        // Run discovery in a background thread to avoid UI freezing
+        new Thread(() -> {
+            try {
+                List<String> rooms = RoomDiscovery.discoverRooms();
+                // Update UI on the Event Dispatch Thread
+                SwingUtilities.invokeLater(() -> {
                     for (String room : rooms) {
                         addDiscoveredRoom(room);
                     }
-                } catch (IOException ex) {}
-                callback.run();
+                });
+            } catch (IOException ex) {
+                ex.printStackTrace(); // or show an error message
             }
         });
-    }
+    }    
 
-    public void onCreateRoom(Consumer<String> callback) {
-        createRoomButton.addActionListener(e -> {
-            String name = "Room";
-            if (!name.isEmpty() && callback != null) {
-                callback.accept(name);
-                try {
-                    RoomHost host = new RoomHost(name, 5000);
-                } catch (IOException ex) {}
-            } else {
-                JOptionPane.showMessageDialog(this, "Please enter a room name.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+    public void onCreateRoom() {
+        String name = roomName;
+        System.out.println(name);
+
+        if (name == null || name.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Room name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            currentHost = new RoomHost(name, 5000); // Store reference so the server doesn't get GC'd
+        } catch (IOException ex) {
+            ex.printStackTrace(); // Log the error
+            JOptionPane.showMessageDialog(this, "Failed to create room.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
