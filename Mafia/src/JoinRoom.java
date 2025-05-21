@@ -127,16 +127,6 @@ public class JoinRoom extends JPanel {
     }
 
     // ====== Utility Methods ======
-    // public String getYourIp() {
-    //     try {
-    //         InetAddress localHost = InetAddress.getLocalHost();
-    //         String ipAddress = localHost.getHostAddress();
-    //         return ipAddress;
-    //     } catch (UnknownHostException e) {
-    //         e.printStackTrace();
-    //         return null;
-    //     }
-    // }
     public String getYourIp() {
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
