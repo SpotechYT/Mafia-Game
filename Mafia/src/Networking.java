@@ -5,6 +5,7 @@ public class Networking {
 
     private ServerSocket serverSocket;
     private boolean running = true;
+    private int port = 25565;
     private String requestData = "";
 
     public String getRequestData(){
@@ -18,22 +19,22 @@ public class Networking {
 
         byte[] sendData = request.getBytes();
 
-        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(ipAd), 8888);
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(ipAd), port);
         socket.send(sendPacket);
 
         System.out.println("Sent Request '" + request + "' to '" + ipAd + "'");
     }
 
     public Networking() throws IOException {
-        serverSocket = new ServerSocket(8888);
+        serverSocket = new ServerSocket(port);
 
         // Start discovery listener in background
         new Thread(this::startListener).start();
     }
 
     private void startListener() {
-        try (DatagramSocket socket = new DatagramSocket(8888)) {
-            System.out.println("Listener started on UDP port 8888");
+        try (DatagramSocket socket = new DatagramSocket(port)) {
+            System.out.println("Listener started on UDP port" + port);
             byte[] buf = new byte[256];
             while (running) {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
