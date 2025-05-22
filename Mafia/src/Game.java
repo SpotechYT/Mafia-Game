@@ -34,9 +34,6 @@ public class Game {
             doctor = (int)(Math.random() * players.size());
         }
 
-        for() {
-        }
-
         System.out.println("Roles assigned!");
     }
 
