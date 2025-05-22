@@ -7,8 +7,7 @@ public class Networking {
     private boolean running = true;
 
     // Networkng to send data to other players
-    public static String sendRequest(String ipAd, String request) throws IOException {
-        String resp = "";
+    public void sendRequest(String ipAd, String request) throws IOException {
         DatagramSocket socket = new DatagramSocket();
         socket.setBroadcast(true);
 
@@ -17,23 +16,7 @@ public class Networking {
         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(ipAd), 8888);
         socket.send(sendPacket);
 
-        socket.setSoTimeout(2000);  // Wait 2 seconds for responses
-
-        try {
-            while (true) {
-                byte[] recvBuf = new byte[256];
-                DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
-                socket.receive(receivePacket);
-                String response = new String(receivePacket.getData(), 0, receivePacket.getLength());
-                resp = response;
-            }
-        } catch (SocketTimeoutException e) {
-            // Timeout reached, stop listening
-            System.err.println(e.getMessage());
-        }
-
-        socket.close();
-        return resp;
+        System.out.println("Sent Request '" + request + "' to '" + ipAd + "'");
     }
 
     public Networking() throws IOException {
@@ -45,7 +28,7 @@ public class Networking {
 
     private void startListener() {
         try (DatagramSocket socket = new DatagramSocket(8888)) {
-            System.out.println("Discovery listener started on UDP port 8888");
+            System.out.println("Listener started on UDP port 8888");
             byte[] buf = new byte[256];
             while (running) {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -56,6 +39,7 @@ public class Networking {
                 System.out.println("Received request: '" + request + "' from '" + senderIP + "'");
 
                 if(request.equals("DISCOVER_ROOM")) {
+                    System.out.println("Request to join this room");
                     sendRequest(senderIP, "This room is available");
                 }
             }
