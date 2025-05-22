@@ -173,8 +173,8 @@ public class JoinRoom extends JPanel {
         try {
             String ip = ipAdField.getText();
             String request = "DISCOVER_ROOM";
-            String response = currentHost.sendRequest(ip, request);
-            addDiscoveredRoom(response);
+            currentHost.sendRequest(ip, request);
+            addDiscoveredRoom(currentHost.getRequestData());
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to discover rooms.", "Error", JOptionPane.ERROR_MESSAGE);
