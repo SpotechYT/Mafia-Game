@@ -25,7 +25,6 @@ import javax.swing.SwingConstants;
 public class JoinRoom extends JPanel {
 
     private String playerName = "Player" + (int) (Math.random() * 1000);
-    private String roomName = playerName + "'s Room";
     private Networking currentHost;
 
     public JButton backButton;
@@ -86,13 +85,8 @@ public class JoinRoom extends JPanel {
         rightPanel.setBorder(BorderFactory.createTitledBorder("Host a Room"));
 
         // Room creation fields
-        roomNameField = new JTextField();
-        roomNameField.setText(roomName);
-        roomNameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        createRoomButton = new JButton("Create Room");
+        createRoomButton = new JButton("Go Online");
 
-        rightPanel.add(new JLabel("Room Name:"));
-        rightPanel.add(roomNameField);
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(createRoomButton);
         rightPanel.add(Box.createVerticalStrut(20));
@@ -188,9 +182,8 @@ public class JoinRoom extends JPanel {
     }
 
     public void onCreateRoom() {
-        System.out.println("Create Room");
-        String name = roomNameField.getText();
-        System.out.println(name);
+        String name = playerName;
+        System.out.println("Going Online with name" + name);
 
         if (name == null || name.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Room name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
