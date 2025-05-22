@@ -38,11 +38,17 @@ public class MafiaScenarioGenerator {
         try {
             // Prompt for Gemini
             String prompt = """
-                Write a short but dramatic mafia-style story about the following events:
+                Write a short, around 5 sentences, story about the following events:
                 - The Mafia tried to kill Alice.
                 - Alice was saved by the Doctor.
-                - Bob, a Villager, was killed in his sleep.
-                Make it sound mysterious and entertaining, but avoid using dialogue. Act as a narrator.
+                If the Doctor did not save Alice, write a story about the Mafia killing Alice  successfully. 
+                If the Doctor did save Alice, write a story about the Mafia failing to kill Alice.
+                Avoid using dialogue. Act as a narrator. Keep it simple and avoid using complex words.
+                Use only general terms, like "the mafia" or "the doctor", and avoid using specific names, other than Alice.
+                The attack can be literally anything. The mafia can attack Alice in any way they want, even random and absurd ways.
+                The story should be in the past tense.
+                Use a third person perspective. 
+                This is for the mafia party game.
                 """;
 
             // Gemini JSON input structure
