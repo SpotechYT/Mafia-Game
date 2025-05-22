@@ -65,19 +65,45 @@ public class SettingPanel extends JPanel {
 
         });
 
+    //     generateButton.addActionListener(e -> {
+    //         rightPanel.removeAll();
+    //         try {
+    //             JTextArea scenarioTextArea = new JTextArea(MafiaScenarioGenerator.getScenario());
+    //             scenarioTextArea.setLineWrap(true);
+    //             scenarioTextArea.setWrapStyleWord(true);
+    //             scenarioTextArea.setPreferredSize(new Dimension(Integer.MAX_VALUE, 300));
+    //             scenarioTextArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
+    //             scenarioTextArea.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
+    //             rightPanel.add(scenarioTextArea);
+    //         } catch (Exception e1) {
+    //             e1.printStackTrace();
+    //         }
+    //         JButton generate = new JButton("Back");
+    //         generate.addActionListener(ev -> {
+    //             resetSettings();
+    //         });
+    //         generate.setPreferredSize(new Dimension(100, 50));
+    //         generate.setMaximumSize(new Dimension(100, 50));
+    //         generate.setMinimumSize(new Dimension(100, 50));
+    //         generate.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //         rightPanel.add(generate);
+    //         rightPanel.revalidate();
+    //         rightPanel.repaint();
+
+    //     });
+        
         generateButton.addActionListener(e -> {
             rightPanel.removeAll();
-            try {
-                JTextArea scenarioTextArea = new JTextArea(MafiaScenarioGenerator.getScenario());
-                scenarioTextArea.setLineWrap(true);
-                scenarioTextArea.setWrapStyleWord(true);
-                scenarioTextArea.setPreferredSize(new Dimension(Integer.MAX_VALUE, 300));
-                scenarioTextArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
-                scenarioTextArea.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
-                rightPanel.add(scenarioTextArea);
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
+
+            // Show a loading message while generating
+            JTextArea scenarioTextArea = new JTextArea("Generating scenario...");
+            scenarioTextArea.setLineWrap(true);
+            scenarioTextArea.setWrapStyleWord(true);
+            scenarioTextArea.setPreferredSize(new Dimension(Integer.MAX_VALUE, 300));
+            scenarioTextArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
+            scenarioTextArea.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
+            rightPanel.add(scenarioTextArea);
+
             JButton generate = new JButton("Back");
             generate.addActionListener(ev -> {
                 resetSettings();
@@ -87,12 +113,30 @@ public class SettingPanel extends JPanel {
             generate.setMinimumSize(new Dimension(100, 50));
             generate.setAlignmentX(Component.CENTER_ALIGNMENT);
             rightPanel.add(generate);
+
             rightPanel.revalidate();
             rightPanel.repaint();
 
+            // Run scenario generation in the background
+            new SwingWorker<String, Void>() {
+                @Override
+                protected String doInBackground() throws Exception {
+                    return MafiaScenarioGenerator.getScenario();
+                }
+
+                @Override
+                protected void done() {
+                    try {
+                        String scenario = get();
+                        scenarioTextArea.setText(scenario != null ? scenario : "Failed to generate scenario.");
+                    } catch (Exception ex) {
+                        scenarioTextArea.setText("Error: " + ex.getMessage());
+                    }
+                }
+            }.execute();
         });
-        
     }
+
 
     public void resetSettings(){
         rightPanel.removeAll();
