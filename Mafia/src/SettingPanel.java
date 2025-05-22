@@ -44,7 +44,7 @@ public class SettingPanel extends JPanel {
         
         nameButton.addActionListener(e -> {
             rightPanel.removeAll();
-            JTextField nameTextPane = new JTextField("Enter your name");
+            JTextField nameTextPane = new JTextField(Driver.getplayerName());
             nameTextPane.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
             nameTextPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
             nameTextPane.setMinimumSize(new Dimension(Integer.MAX_VALUE, 30));
@@ -52,6 +52,7 @@ public class SettingPanel extends JPanel {
             JButton newName = new JButton("Change");
             newName.addActionListener(ev -> {
                 String name = nameTextPane.getText();
+                Driver.setplayerName(name);
                 //code to change the name
                 resetSettings();
             });
