@@ -3,9 +3,8 @@ import java.net.*;
 
 public class Networking {
 
-    private ServerSocket serverSocket;
     private boolean running = true;
-    private int port = 25565;
+    private int port = 8888;
     private String requestData = "";
 
     public String getRequestData(){
@@ -26,15 +25,13 @@ public class Networking {
     }
 
     public Networking() throws IOException {
-        serverSocket = new ServerSocket(port);
-
         // Start discovery listener in background
         new Thread(this::startListener).start();
     }
 
     private void startListener() {
         try (DatagramSocket socket = new DatagramSocket(port)) {
-            System.out.println("Listener started on UDP port" + port);
+            System.out.println("Listener started on UDP port " + port);
             byte[] buf = new byte[256];
             while (running) {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -57,6 +54,5 @@ public class Networking {
 
     public void stop() throws IOException {
         running = false;
-        serverSocket.close();
     }
 }
