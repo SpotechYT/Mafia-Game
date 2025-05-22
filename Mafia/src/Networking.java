@@ -5,6 +5,11 @@ public class Networking {
 
     private ServerSocket serverSocket;
     private boolean running = true;
+    private String requestData = "";
+
+    public String getRequestData(){
+        return requestData;
+    }
 
     // Networkng to send data to other players
     public void sendRequest(String ipAd, String request) throws IOException {
@@ -37,6 +42,7 @@ public class Networking {
                 String request = new String(packet.getData(), 0, packet.getLength());
                 String senderIP = packet.getAddress().getHostAddress();
                 System.out.println("Received request: '" + request + "' from '" + senderIP + "'");
+                requestData = request;
 
                 if(request.equals("DISCOVER_ROOM")) {
                     System.out.println("Request to join this room");
