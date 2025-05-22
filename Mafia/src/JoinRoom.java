@@ -68,7 +68,7 @@ public class JoinRoom extends JPanel {
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setBorder(BorderFactory.createTitledBorder("Available Rooms"));
         ipAdField = new JTextField();
-        ipAdField.setText("255.255.255.255");
+        ipAdField.setText("10.9.35.68");
         ipAdField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         leftPanel.add(new JLabel("IP address:"));
         leftPanel.add(ipAdField);
