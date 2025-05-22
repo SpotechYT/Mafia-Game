@@ -1,18 +1,17 @@
 import java.awt.*;
 import javax.swing.*;
 
-
 public class SettingPanel extends JPanel {
 
     public JButton backButton;
     public JButton nameButton;
     public JPanel centerPanel;
     public JPanel rightPanel;
+    public JButton generateButton;
 
-    public SettingPanel() {
+    public SettingPanel() throws Exception {
         // Set layout
         setLayout(new BorderLayout());
-
         // Create a top panel for the back button
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         backButton = new JButton("Back");
@@ -25,10 +24,13 @@ public class SettingPanel extends JPanel {
         // You can add game content to other parts of the panel later
         centerPanel = new JPanel(new GridLayout(1, 2));
 
-        JPanel leftPanel = new JPanel(new BorderLayout());
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         nameButton = new JButton("Change Name");
+        generateButton = new JButton("Generate Scenario");
         leftPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
-        leftPanel.add(new JScrollPane(nameButton), BorderLayout.NORTH);
+        leftPanel.add(new JScrollPane(nameButton));
+        leftPanel.add(new JScrollPane(generateButton));
 
         centerPanel.add(leftPanel);
 
@@ -58,6 +60,33 @@ public class SettingPanel extends JPanel {
             newName.setMinimumSize(new Dimension(100, 50));
             newName.setAlignmentX(Component.CENTER_ALIGNMENT);
             rightPanel.add(newName);
+            rightPanel.revalidate();
+            rightPanel.repaint();
+
+        });
+
+        generateButton.addActionListener(e -> {
+            rightPanel.removeAll();
+            try {
+                JTextArea scenarioTextArea = new JTextArea(MafiaScenarioGenerator.getScenario());
+                scenarioTextArea.setLineWrap(true);
+                scenarioTextArea.setWrapStyleWord(true);
+                scenarioTextArea.setPreferredSize(new Dimension(Integer.MAX_VALUE, 300));
+                scenarioTextArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
+                scenarioTextArea.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
+                rightPanel.add(scenarioTextArea);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            JButton generate = new JButton("Back");
+            generate.addActionListener(ev -> {
+                resetSettings();
+            });
+            generate.setPreferredSize(new Dimension(100, 50));
+            generate.setMaximumSize(new Dimension(100, 50));
+            generate.setMinimumSize(new Dimension(100, 50));
+            generate.setAlignmentX(Component.CENTER_ALIGNMENT);
+            rightPanel.add(generate);
             rightPanel.revalidate();
             rightPanel.repaint();
 
