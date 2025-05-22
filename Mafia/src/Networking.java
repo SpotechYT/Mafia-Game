@@ -43,8 +43,15 @@ public class Networking {
                 requestData = request;
 
                 if(request.equals("DISCOVER_ROOM")) {
-                    System.out.println("Request to join this room");
-                    sendRequest(senderIP, "This room is available");
+                    sendRequest(senderIP, "ROOM_OPEN");
+                }
+                if(request.equals("ROOM_OPEN")) {
+                    sendRequest(senderIP, "JOIN_ROOM:" + Driver.getplayerName());
+                }
+                if(request.startsWith("JOIN_ROOM:")) {
+                    String playerName = request.substring(10);
+                    System.out.println("Player " + playerName + " joined the room.");
+                    // Add player to the list
                 }
             }
         } catch (IOException e) {
