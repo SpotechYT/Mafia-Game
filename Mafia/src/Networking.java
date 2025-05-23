@@ -54,5 +54,7 @@ public class Networking {
 
     public void stop() throws IOException {
         running = false;
+        socket.close();
+        System.out.println("Listener stopped");
     }
 }
