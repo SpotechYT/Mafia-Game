@@ -6,11 +6,11 @@ import java.net.InetAddress;
 import java.util.HashMap;
 
 public class Game {
-    boolean gameOver = false;
+    private static boolean gameOver = false;
     // Name, IP
-    HashMap<String, String> players = new HashMap<>();
+    private static HashMap<String, String> players = new HashMap<>();
     // Player, Role
-    HashMap<String, String> roles = new HashMap<>();
+    private static HashMap<String, String> roles = new HashMap<>();
 
     // Networking
     private boolean running = true;
@@ -24,8 +24,9 @@ public class Game {
         new Thread(this::startListener).start();
     }
 
-    public void addPlayer(String name, String ip) {
+    public static void addPlayer(String name, String ip) {
         players.put(name, ip);
+        JoinRoom.addPlayerToList(name + ":" + ip);
     }
 
     public String getPlayers() {
@@ -106,6 +107,7 @@ public class Game {
                 }
                 if(request.startsWith("JOIN_ROOM:")) {
                     String playerName = request.substring(10);
+                    addPlayer(playerName, senderIP);
                     sendRequest(senderIP, getPlayers());
                     System.out.println("Player " + playerName + " joined the room.");
                 }

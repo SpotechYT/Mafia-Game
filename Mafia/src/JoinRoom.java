@@ -35,7 +35,7 @@ public class JoinRoom extends JPanel {
     public JTextField ipAdField;
     public JButton createRoomButton;
 
-    public DefaultListModel<String> playerListModel;
+    public static DefaultListModel<String> playerListModel;
     public JList<String> playerList;
 
     private Game game = Driver.getGame();
@@ -150,7 +150,7 @@ public class JoinRoom extends JPanel {
         roomListModel.clear();
     }
 
-    public void addPlayerToList(String playerName) {
+    public static void addPlayerToList(String playerName) {
         if (!playerListModel.contains(playerName)) {
             playerListModel.addElement(playerName);
         }
@@ -182,6 +182,7 @@ public class JoinRoom extends JPanel {
 
     public void onCreateRoom() {
         String name = Driver.getplayerName();
+        game.addPlayer(name, getYourIp());
         System.out.println("Going Online with name" + name);
 
         if (name == null || name.trim().isEmpty()) {
