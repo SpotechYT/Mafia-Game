@@ -9,12 +9,16 @@ public class Driver {
     static JPanel mainPanel = new JPanel(cardLayout);
 
     private static String playerName = "Player" + (int) (Math.random() * 1000);
+    private static Game game;
 
     public static void main(String[] args) throws Exception {
+        game = new Game();
+        
         Jframes();
+    }
 
-        //Game game = new Game();
-        //game.startGame();
+    public static Game getGame() {
+        return game;
     }
 
     public static String getplayerName() {
