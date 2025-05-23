@@ -5,17 +5,15 @@ public class Player {
     private String name;
     private Role role;
     private boolean alive;
-    private int votes;
-    private String pathToIcon;
+    private String pathToChar;
 
     // Constructor
-    public Player(String name, int votes, String pathToIcon) {
+    public Player(String name, String pathToChar) {
         this.name = name;
         Civilian civilian = new Civilian(); // Default role is civilian 
         this.role = civilian;
         this.alive = true; // Default to alive
-        this.votes = votes;
-        this.pathToIcon = pathToIcon;
+        this.pathToChar = pathToChar;
     }
 
 
@@ -44,20 +42,12 @@ public class Player {
         this.alive = alive;
     }
 
-    public int getVotes() {
-        return votes;
+    public String getPathToChar() {
+        return pathToChar;
     }
 
-    public void setVotes(int votes) {
-        this.votes = votes;
-    }
-
-    public String getPathToIcon() {
-        return pathToIcon;
-    }
-
-    public void setPathToIcon(String pathToIcon) {
-        this.pathToIcon = pathToIcon;
+    public void setPathToChar(String pathToChar) {
+        this.pathToChar = pathToChar;
     }
 
     

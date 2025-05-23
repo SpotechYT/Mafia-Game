@@ -103,7 +103,7 @@ public class Game {
                     roomInfo = senderIP + ":" + request;
                 }
                 if(request.equals("ROOM_IS_OPEN")) {
-                    sendRequest(senderIP, "JOIN_ROOM:" + Driver.getplayerName());
+                    sendRequest(senderIP, "JOIN_ROOM:" + Driver.getPlayerName());
                 }
                 if(request.startsWith("JOIN_ROOM:")) {
                     String playerName = request.substring(10);

@@ -44,7 +44,7 @@ public class SettingPanel extends JPanel {
         
         nameButton.addActionListener(e -> {
             rightPanel.removeAll();
-            JTextField nameTextPane = new JTextField(Driver.getplayerName());
+            JTextField nameTextPane = new JTextField(Driver.getPlayerName());
             nameTextPane.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
             nameTextPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
             nameTextPane.setMinimumSize(new Dimension(Integer.MAX_VALUE, 30));
@@ -52,7 +52,7 @@ public class SettingPanel extends JPanel {
             JButton newName = new JButton("Change");
             newName.addActionListener(ev -> {
                 String name = nameTextPane.getText();
-                Driver.setplayerName(name);
+                Driver.setPlayerName(name);
                 //code to change the name
                 resetSettings();
             });
@@ -122,7 +122,7 @@ public class SettingPanel extends JPanel {
             new SwingWorker<String, Void>() {
                 @Override
                 protected String doInBackground() throws Exception {
-                    return MafiaScenarioGenerator.getScenario();
+                    return MafiaScenarioGenerator.getScenario(Driver.getPlayer());
                 }
 
                 @Override
