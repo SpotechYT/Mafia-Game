@@ -8,13 +8,17 @@ public class Driver {
     static CardLayout cardLayout = new CardLayout();
     static JPanel mainPanel = new JPanel(cardLayout);
     private static Player player = new Player("Player" + (int) (Math.random() * 1000), "p1.png");
-
+    private static String playerName = player.getName();
+    private static Game game;
 
     public static void main(String[] args) throws Exception {
+        game = new Game();
+        
         Jframes();
+    }
 
-        //Game game = new Game();
-        //game.startGame();
+    public static Game getGame() {
+        return game;
     }
 
     public static String getPlayerName() {
