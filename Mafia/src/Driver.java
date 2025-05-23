@@ -8,14 +8,28 @@ public class Driver {
     static CardLayout cardLayout = new CardLayout();
     static JPanel mainPanel = new JPanel(cardLayout);
 
-    public static void main(String[] args) {
-        Jframes();
+    private static String playerName = "Player" + (int) (Math.random() * 1000);
+    private static Game game;
 
-        //Game game = new Game();
-        //game.startGame();
+    public static void main(String[] args) throws Exception {
+        game = new Game();
+        
+        Jframes();
     }
 
-    public static void Jframes(){
+    public static Game getGame() {
+        return game;
+    }
+
+    public static String getplayerName() {
+        return playerName;
+    }
+
+    public static void setplayerName(String name) {
+        playerName = name;
+    }
+
+    public static void Jframes() throws Exception {
         // Create the frame
         JFrame frame = new JFrame("Mafia");
         frame.setSize(1280, 720);
