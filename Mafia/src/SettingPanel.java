@@ -130,6 +130,7 @@ public class SettingPanel extends JPanel {
                     try {
                         String scenario = get();
                         scenarioTextArea.setText(scenario != null ? scenario : "Failed to generate scenario.");
+                        scenarioTextArea.setEditable(false);
                     } catch (Exception ex) {
                         scenarioTextArea.setText("Error: " + ex.getMessage());
                     }
