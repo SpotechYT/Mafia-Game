@@ -24,7 +24,6 @@ import javax.swing.SwingConstants;
 
 public class JoinRoom extends JPanel {
 
-    private String playerName = "Player" + (int) (Math.random() * 1000);
     private Networking currentHost;
 
     public JButton backButton;
@@ -74,7 +73,7 @@ public class JoinRoom extends JPanel {
         leftPanel.add(ipAdField);
         leftPanel.add(new JScrollPane(roomList), BorderLayout.CENTER);
 
-        refreshButton = new JButton("Refresh");
+        refreshButton = new JButton("Connect");
         leftPanel.add(refreshButton, BorderLayout.SOUTH);
 
         centerPanel.add(leftPanel);
@@ -182,7 +181,7 @@ public class JoinRoom extends JPanel {
     }
 
     public void onCreateRoom() {
-        String name = playerName;
+        String name = Driver.getplayerName();
         System.out.println("Going Online with name" + name);
 
         if (name == null || name.trim().isEmpty()) {
