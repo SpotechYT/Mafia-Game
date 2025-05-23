@@ -11,8 +11,8 @@ public class MafiaScenarioGenerator {
     private static String API_URL;
     private static ArrayList<String> weapons = new ArrayList<>();
 
-    public static String getScenario() throws Exception {
-        StringBuilder response = getRAWScenario();
+    public static String getScenario(Player target) throws Exception {
+        StringBuilder response = getRAWScenario(target);
         String rawJson = response.toString();
         String textMarker = "\"text\": \"";
         int textStart = rawJson.indexOf(textMarker);
@@ -38,19 +38,19 @@ public class MafiaScenarioGenerator {
         return null;
     }
 
-    public static StringBuilder getRAWScenario() throws Exception {
+    public static StringBuilder getRAWScenario(Player target) throws Exception {
         keyFromDrive();  // Load API key from environment variable
         try {
             // Prompt for Gemini
             String prompt = """
                 Write a short story about the following events:
-                - The Mafia tried to kill Alice.
-                - Alice was not saved by the Doctor.
-                If the Doctor did not save Alice, write a story about the Mafia killing Alice  successfully. 
-                If the Doctor did save Alice, write a story about the Mafia failing to kill Alice.
+                - The Mafia tried to kill %s.
+                - %s was not saved by the Doctor.
+                If the Doctor did not save %s, write a story about the Mafia killing %s  successfully. 
+                If the Doctor did save %s, write a story about the Mafia failing to kill %s.
                 Avoid using dialogue. Act as a narrator. Keep it simple and avoid using complex words.
-                Use only general terms, like "the mafia" or "the doctor", and avoid using specific names, other than Alice.
-                The attack can be literally anything. The mafia can attack Alice in any way they want, even random and absurd ways.
+                Use only general terms, like "the mafia" or "the doctor", and avoid using specific names, other than %s.
+                The attack can be literally anything. The mafia can attack %s in any way they want, even random and absurd ways.
                 The story should be in the past tense.
                 Use a third person perspective. 
                 This is for the mafia party game.
@@ -86,7 +86,7 @@ public class MafiaScenarioGenerator {
                 PLAYERNAME’s soul was sent to voicemail. The Doctor called it back, left a strongly worded message, and boom—respawned.
                 PLAYERNAME was folded into a pizza box. The Doctor unboxed them, microwaved for 30 seconds, and fluffed them back to life.
                 PLAYERNAME died in a mysterious “accident” involving a rubber duck and a fish tank. The Doctor performed a rubber-duckectomy and rebooted them with a snorkel and CPR rap beat.
-                """;
+                """.formatted(target.getName(), target.getName(), target.getName(), target.getName(), target.getName(), target.getName(), target.getName(), target.getName());
 
             // Gemini JSON input structure
             String jsonInput = "{"

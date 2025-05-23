@@ -46,7 +46,7 @@ public class Networking {
                     sendRequest(senderIP, "ROOM_OPEN");
                 }
                 if(request.equals("ROOM_OPEN")) {
-                    sendRequest(senderIP, "JOIN_ROOM:" + Driver.getplayerName());
+                    sendRequest(senderIP, "JOIN_ROOM:" + Driver.getPlayerName());
                 }
                 if(request.startsWith("JOIN_ROOM:")) {
                     String playerName = request.substring(10);

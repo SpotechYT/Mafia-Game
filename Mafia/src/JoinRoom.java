@@ -181,7 +181,7 @@ public class JoinRoom extends JPanel {
     }
 
     public void onCreateRoom() {
-        String name = Driver.getplayerName();
+        String name = Driver.getPlayerName();
         System.out.println("Going Online with name" + name);
 
         if (name == null || name.trim().isEmpty()) {
