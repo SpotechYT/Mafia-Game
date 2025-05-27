@@ -12,6 +12,11 @@ public class Game {
     // Player, Role
     private static HashMap<String, String> roles = new HashMap<>();
 
+    // Victim and saved player
+    private String victim;
+    private String savedPlayer;
+    private String story;
+
     // Networking
     private boolean running = true;
     private int port = 8888;
@@ -59,17 +64,94 @@ public class Game {
             doctor = (int)(Math.random() * players.size());
         }
 
-        System.out.println("Roles assigned!");
+        for(String player : players.keySet()) {
+            if (player.equals("Mafia" + mafia)) {
+                roles.put(player, "Mafia");
+            } else if (player.equals("Doctor" + doctor)) {
+                roles.put(player, "Doctor");
+            } else {
+                roles.put(player, "Citizen");
+            }
+        }
+
+        System.out.println("Roles assigned");
     }
 
-    public void startNightPhase() {
+    public void distributeRoles() {
+        // Send a request to each player with their role
+        for (String player : players.keySet()) {
+            String role = roles.get(player);
+            try {
+                String IP = players.get(player);
+                sendRequest(IP, "ROLE:" + role);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Roles distributed to players");
+    }
+
+    public void startNightPhase() throws IOException {
+        victim = "";
+        savedPlayer = "";
+        story = "";
+
         // Logic to start the night phase
-        System.out.println("Night phase started!");
+        System.out.println("Night phase started");
+
+        // Tell the players that the night phase has started
+        contactAllPlayers("NIGHT_PHASE");
+
+        // Tell the Mafia to choose a victim
+        sendRequest(roles.get("Mafia"), "CHOOSE_VICTIM");
+
+        // Tell the Doctor to choose a player to save
+        sendRequest(roles.get("Doctor"), "CHOOSE_PLAYER_TO_SAVE");
+
+        // Once the victim and saved player are chosen, process the results
+        while (victim.isEmpty() || savedPlayer.isEmpty()) {
+            // Wait for the victim and saved player to be set
+            try {
+                Thread.sleep(500); // Sleep for a second before checking again
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Generate Results
+        if (victim == savedPlayer){
+            // TODO: Generate story
+        } else {
+            // TODO: Generate story
+        }
+
+        contactAllPlayers("NIGHT_PHASE_ENDED");
     }
 
     public void startDayPhase() {
         // Logic to start the day phase
-        System.out.println("Day phase started!");
+        System.out.println("Day phase started");
+    }
+
+    public void endGame() throws IOException {
+        // Logic to end the game
+        System.out.println("Game ended");
+        gameOver = true;
+        stop();
+    }
+
+    public void contactAllPlayers(String message) {
+        // Send a message to all players
+        for (String player : players.keySet()) {
+            String ip = players.get(player);
+            try {
+                sendRequest(ip, message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Message sent to all players: " + message);
     }
 
     // Networkng to send data to other players
