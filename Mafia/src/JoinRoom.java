@@ -24,8 +24,6 @@ import javax.swing.SwingConstants;
 
 public class JoinRoom extends JPanel {
 
-    private Networking currentHost;
-
     public JButton backButton;
     public JLabel ipLabel;
 
@@ -37,8 +35,10 @@ public class JoinRoom extends JPanel {
     public JTextField ipAdField;
     public JButton createRoomButton;
 
-    public DefaultListModel<String> playerListModel;
+    public static DefaultListModel<String> playerListModel;
     public JList<String> playerList;
+
+    private Game game = Driver.getGame();
 
     public JoinRoom() {
         setLayout(new BorderLayout());
@@ -67,7 +67,7 @@ public class JoinRoom extends JPanel {
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setBorder(BorderFactory.createTitledBorder("Available Rooms"));
         ipAdField = new JTextField();
-        ipAdField.setText("10.9.35.68");
+        ipAdField.setText("Enter IP address");
         ipAdField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         leftPanel.add(new JLabel("IP address:"));
         leftPanel.add(ipAdField);
@@ -150,7 +150,7 @@ public class JoinRoom extends JPanel {
         roomListModel.clear();
     }
 
-    public void addPlayerToList(String playerName) {
+    public static void addPlayerToList(String playerName) {
         if (!playerListModel.contains(playerName)) {
             playerListModel.addElement(playerName);
         }
@@ -172,8 +172,8 @@ public class JoinRoom extends JPanel {
         try {
             String ip = ipAdField.getText();
             String request = "DISCOVER_ROOM";
-            currentHost.sendRequest(ip, request);
-            addDiscoveredRoom(currentHost.getRequestData());
+            game.sendRequest(ip, request);
+            addDiscoveredRoom(game.getRoomInfo());
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to discover rooms.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -181,7 +181,8 @@ public class JoinRoom extends JPanel {
     }
 
     public void onCreateRoom() {
-        String name = Driver.getplayerName();
+        String name = Driver.getPlayerName();
+        game.addPlayer(name, getYourIp());
         System.out.println("Going Online with name" + name);
 
         if (name == null || name.trim().isEmpty()) {
@@ -190,7 +191,7 @@ public class JoinRoom extends JPanel {
         }
 
         try {
-            currentHost = new Networking(); // Starts the listener
+            game.goOnline();
         } catch (IOException ex) {
             ex.printStackTrace(); // Log the error
             JOptionPane.showMessageDialog(this, "Failed to create room.", "Error", JOptionPane.ERROR_MESSAGE);

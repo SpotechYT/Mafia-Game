@@ -1,13 +1,18 @@
-import java.io.*;
-import java.net.*;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MafiaScenarioGenerator {
     private static String API_KEY; 
     private static String API_URL;
+    private static ArrayList<String> weapons = new ArrayList<>();
 
-    public static String getScenario() throws Exception {
-        StringBuilder response = getRAWScenario();
+    public static String getScenario(Player target) throws Exception {
+        StringBuilder response = getRAWScenario(target);
         String rawJson = response.toString();
         String textMarker = "\"text\": \"";
         int textStart = rawJson.indexOf(textMarker);
@@ -33,17 +38,55 @@ public class MafiaScenarioGenerator {
         return null;
     }
 
-    public static StringBuilder getRAWScenario() throws Exception {
+    public static StringBuilder getRAWScenario(Player target) throws Exception {
         keyFromDrive();  // Load API key from environment variable
         try {
             // Prompt for Gemini
             String prompt = """
-                Write a short but dramatic mafia-style story about the following events:
-                - The Mafia tried to kill Alice.
-                - Alice was saved by the Doctor.
-                - Bob, a Villager, was killed in his sleep.
-                Make it sound mysterious and entertaining, but avoid using dialogue. Act as a narrator.
-                """;
+                Write a short story about the following events:
+                - The Mafia tried to kill %s.
+                - %s was not saved by the Doctor.
+                If the Doctor did not save %s, write a story about the Mafia killing %s  successfully. 
+                If the Doctor did save %s, write a story about the Mafia failing to kill %s.
+                Avoid using dialogue. Act as a narrator. Keep it simple and avoid using complex words.
+                Use only general terms, like "the mafia" or "the doctor", and avoid using specific names, other than %s.
+                The attack can be literally anything. The mafia can attack %s in any way they want, even random and absurd ways.
+                The story should be in the past tense.
+                Use a third person perspective. 
+                This is for the mafia party game.
+
+                Use the following example as a reference:
+                PLAYERNAME was eliminated by The Mafia after mistaking a horse’s head for a pillow. Rest in pieces (and hay).
+                PLAYERNAME challenged The Mafia to a dance battle. Unfortunately, The Mafia moonwalked over their spine. Fatal, but funky.
+                PLAYERNAME thought The Mafia was a magician. They volunteered for the "sawing in half" trick. No refunds.
+                PLAYERNAME received a suspicious cannoli. They ate it anyway. "Leave the gun, take the indigestion."
+                PLAYERNAME tried to spy on The Mafia with a drone. The Mafia returned the favor with a live grenade strapped to a pigeon.
+                PLAYERNAME was whacked after tweeting “#MafiaSucks.” Turns out The Mafia follows back—and hits back harder.
+                PLAYERNAME tripped on a banana peel left by The Mafia. Classic slapstick… with a deadly fall off a 3-story balcony.
+                PLAYERNAME refused to pay protection money—in Monopoly. The Mafia flipped the board... and the table... and PLAYERNAME.
+                PLAYERNAME opened a cursed spaghetti shop across the street from The Mafia's restaurant. Business: bad. Fate: worse.
+                PLAYERNAME tried to prank The Mafia with a fake parking ticket. The Mafia responded by parking a tank on them.
+                PLAYERNAME got sleep-deprived and accused the toaster of being The Mafia. The actual Mafia heard—and toasted them.
+                PLAYERNAME was cast as an extra in a mafia movie. The Mafia thought it was a documentary. Rest in realism.
+                PLAYERNAME stole The Mafia’s favorite meme and watermarked it. Internet beef turned into actual beef—with cement shoes.
+                PLAYERNAME thought they could out-pizza The Mafia. The Mafia delivered… a pineapple-and-C4 special.
+                PLAYERNAME hosted a roast of The Mafia. The jokes were killer. So was The Mafia.
+                PLAYERNAME was crushed by a suspiciously large meatball. The Doctor re-inflated them using a bike pump and olive oil.
+                The Mafia filled PLAYERNAME’s bathtub with live eels. After the shocking death, The Doctor jumpstarted them back with jumper cables and whale songs.
+                PLAYERNAME choked on a poisoned cannoli. The Doctor removed the toxin using a reverse espresso enema and strong opinions.
+                The Mafia launched PLAYERNAME into the sun (via catapult). The Doctor caught the ashes in a jar, added Red Bull, and shook vigorously. Reassembled!
+                PLAYERNAME was drowned in carbonated water. The Doctor resuscitated them by whispering flat facts until the fizz wore off.
+                PLAYERNAME exploded from laughing at a Mafia pun. The Doctor stitched them back together using duct tape and a CPR-certified dad joke.
+                The Mafia hit PLAYERNAME with a piano. The Doctor extracted their soul from the C key and slammed it back in with a defibrillator solo.
+                PLAYERNAME was run over by a gelato truck. The Doctor scooped their remains into a waffle cone and reanimated them with sprinkles of life.
+                The Mafia turned PLAYERNAME into lasagna. The Doctor deconstructed the dish, shouted “UNDO,” and cast a life-saving microwave spell.
+                PLAYERNAME was launched into orbit by a “cement cannon.” The Doctor caught them with a space Roomba and rebooted their vitals with space WiFi.
+                PLAYERNAME was turned into a statue by The Mafia's cursed Nonna. The Doctor melted the curse with a garlic poultice and soft jazz.
+                The Mafia poisoned PLAYERNAME’s bubble tea. The Doctor extracted the toxic boba with tiny tweezers and pure disbelief.
+                PLAYERNAME’s soul was sent to voicemail. The Doctor called it back, left a strongly worded message, and boom—respawned.
+                PLAYERNAME was folded into a pizza box. The Doctor unboxed them, microwaved for 30 seconds, and fluffed them back to life.
+                PLAYERNAME died in a mysterious “accident” involving a rubber duck and a fish tank. The Doctor performed a rubber-duckectomy and rebooted them with a snorkel and CPR rap beat.
+                """.formatted(target.getName(), target.getName(), target.getName(), target.getName(), target.getName(), target.getName(), target.getName(), target.getName());
 
             // Gemini JSON input structure
             String jsonInput = "{"

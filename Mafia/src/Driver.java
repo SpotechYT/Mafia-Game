@@ -7,22 +7,26 @@ public class Driver {
     // Create the CardLayout container
     static CardLayout cardLayout = new CardLayout();
     static JPanel mainPanel = new JPanel(cardLayout);
-
-    private static String playerName = "Player" + (int) (Math.random() * 1000);
+    private static Player player = new Player("Player" + (int) (Math.random() * 1000), "p1.png");
+    private static String playerName = player.getName();
+    private static Game game;
 
     public static void main(String[] args) throws Exception {
+        game = new Game();
+        
         Jframes();
-
-        //Game game = new Game();
-        //game.startGame();
     }
 
-    public static String getplayerName() {
-        return playerName;
+    public static Game getGame() {
+        return game;
     }
 
-    public static void setplayerName(String name) {
-        playerName = name;
+    public static String getPlayerName() {
+        return player.getName();
+    }
+
+    public static void setPlayerName(String name) {
+        player.setName(name);
     }
 
     public static void Jframes() throws Exception {
@@ -59,4 +63,9 @@ public class Driver {
 
         //testteset
     }
+
+    public static Player getPlayer() {
+        return player;
+    }
+
 }
