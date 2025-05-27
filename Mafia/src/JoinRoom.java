@@ -24,12 +24,11 @@ public class JoinRoom extends JPanel {
     public static DefaultListModel<String> playerListModel;
     public JList<String> playerList;
     public JScrollPane playerScrollPane;
-
+   
     private Game game = Driver.getGame();
 
     public JoinRoom() {
         setLayout(new BorderLayout());
-
         // --- TOP PANEL ---
         JPanel topPanel = new JPanel(new BorderLayout());
 
@@ -98,17 +97,20 @@ public class JoinRoom extends JPanel {
             // This is your function body
             onRefreshRooms();
             joinRoom();
+            joinRoom();
         });
 
         createRoomButton.addActionListener(e -> {
             // This is your function body
             onCreateRoom();
+
         });
 
         leaveRoomButton.addActionListener(e -> {
             // Logic to leave the room
             onLeaveRoom();
         });
+      
         add(centerPanel, BorderLayout.CENTER);
     }
 
@@ -181,7 +183,7 @@ public class JoinRoom extends JPanel {
 
     public void onCreateRoom() {
         clearPlayerList();
-        rightPanel.remove(leaveRoomButton);
+        rightReset();
         rightPanel.revalidate();
         rightPanel.repaint();
         String name = Driver.getPlayerName();
@@ -190,7 +192,6 @@ public class JoinRoom extends JPanel {
             return;
         }
 
-        // game.addPlayer(name, getYourIp());
         addPlayerToList(name + ":" + getYourIp());
         System.out.println("Going Online with name " + name);
 
@@ -217,12 +218,44 @@ public class JoinRoom extends JPanel {
 
     public void joinRoom(){
         clearPlayerList();
+        rightReset();
         HashMap<String, String> players = game.getPlayersMap();
+        //int i = 1;
         for (String playerName : players.keySet()) {
             addPlayerToList(playerName + ":" + players.get(playerName));
+            JButton kickButton = new JButton("Kick " + playerName);
+            kickButton.setPreferredSize(new Dimension(100, 50));
+
+            kickButton.addActionListener(ev -> {
+                game.removePlayer(playerName);
+                clearPlayerList();                             // Clear and refresh list
+                for (String name : game.getPlayersMap().keySet()) {
+                    addPlayerToList(name + ":" + game.getPlayersMap().get(name));
+                }  
+                rightPanel.remove(kickButton);   
+                rightPanel.revalidate();
+                rightPanel.repaint();
+            });
+
+            rightPanel.add(kickButton);
         }
         rightPanel.add(leaveRoomButton);
         rightPanel.revalidate();
         rightPanel.repaint();
+    }
+
+    public void rightReset(){
+        rightPanel.removeAll();
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightPanel.setBorder(BorderFactory.createTitledBorder("Host a Room"));
+        rightPanel.add(Box.createVerticalStrut(10));
+        rightPanel.add(createRoomButton);
+        rightPanel.add(Box.createVerticalStrut(20));
+        playerScrollPane.setPreferredSize(new Dimension(200, 150));
+        rightPanel.add(new JLabel("Players in Room:"));
+        rightPanel.add(playerScrollPane);
+        rightPanel.add(Box.createVerticalGlue());
+
+        
     }
 }
