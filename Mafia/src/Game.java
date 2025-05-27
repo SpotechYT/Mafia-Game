@@ -7,10 +7,9 @@ import java.util.HashMap;
 
 public class Game {
     private static boolean gameOver = false;
-    // Name, IP
+    // Player, ip
     private static HashMap<String, String> players = new HashMap<>();
-    // Player, Role
-    private static HashMap<String, String> roles = new HashMap<>();
+    
 
     // Networking
     private boolean running = true;
@@ -27,6 +26,11 @@ public class Game {
     public static void addPlayer(String name, String ip) {
         players.put(name, ip);
         JoinRoom.addPlayerToList(name + ":" + ip);
+    }
+
+    public static void removePlayer(String name) {
+        players.remove(name);
+        JoinRoom.removePlayerFromList(name);
     }
 
     public String getPlayers() {

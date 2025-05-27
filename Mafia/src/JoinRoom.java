@@ -1,29 +1,14 @@
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import java.awt.*;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import javax.swing.*;
+
 
 public class JoinRoom extends JPanel {
 
+    public JPanel rightPanel;
     public JButton backButton;
     public JLabel ipLabel;
 
@@ -34,6 +19,7 @@ public class JoinRoom extends JPanel {
     public JTextField roomNameField;
     public JTextField ipAdField;
     public JButton createRoomButton;
+    public JButton leaveRoomButton;
 
     public static DefaultListModel<String> playerListModel;
     public JList<String> playerList;
@@ -79,7 +65,7 @@ public class JoinRoom extends JPanel {
         centerPanel.add(leftPanel);
 
         // RIGHT: Host Room Form + Player List
-        JPanel rightPanel = new JPanel();
+        rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         rightPanel.setBorder(BorderFactory.createTitledBorder("Host a Room"));
 
@@ -90,6 +76,8 @@ public class JoinRoom extends JPanel {
         rightPanel.add(createRoomButton);
         rightPanel.add(Box.createVerticalStrut(20));
 
+        
+
         // Player List
         playerListModel = new DefaultListModel<>();
         playerList = new JList<>(playerListModel);
@@ -99,6 +87,8 @@ public class JoinRoom extends JPanel {
         rightPanel.add(new JLabel("Players in Room:"));
         rightPanel.add(playerScrollPane);
 
+        leaveRoomButton = new JButton("Leave Room");
+
         rightPanel.add(Box.createVerticalGlue());
 
         centerPanel.add(rightPanel);
@@ -106,13 +96,23 @@ public class JoinRoom extends JPanel {
         refreshButton.addActionListener(e -> {
             // This is your function body
             onRefreshRooms();
+            rightPanel.add(leaveRoomButton);
+            rightPanel.revalidate();
+            rightPanel.repaint();
         });
 
         createRoomButton.addActionListener(e -> {
             // This is your function body
             onCreateRoom();
+            rightPanel.add(leaveRoomButton);
+            rightPanel.revalidate();
+            rightPanel.repaint();
         });
 
+        leaveRoomButton.addActionListener(e -> {
+            // Logic to leave the room
+            onLeaveRoom();
+        });
         add(centerPanel, BorderLayout.CENTER);
     }
 
@@ -139,6 +139,7 @@ public class JoinRoom extends JPanel {
         return null;
     }
 
+    
     public void addDiscoveredRoom(String roomInfo) {
         String entry = roomInfo;
         if (!roomListModel.contains(entry)) {
@@ -156,7 +157,7 @@ public class JoinRoom extends JPanel {
         }
     }
 
-    public void removePlayerFromList(String playerName) {
+    public static void removePlayerFromList(String playerName) {
         playerListModel.removeElement(playerName);
     }
 
@@ -173,17 +174,19 @@ public class JoinRoom extends JPanel {
             String ip = ipAdField.getText();
             String request = "DISCOVER_ROOM";
             game.sendRequest(ip, request);
+            addDiscoveredRoom(request);
             addDiscoveredRoom(game.getRoomInfo());
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to discover rooms.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
     }
 
     public void onCreateRoom() {
         String name = Driver.getPlayerName();
         game.addPlayer(name, getYourIp());
-        System.out.println("Going Online with name" + name);
+        System.out.println("Going Online with name " + name);
 
         if (name == null || name.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Room name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -196,5 +199,13 @@ public class JoinRoom extends JPanel {
             ex.printStackTrace(); // Log the error
             JOptionPane.showMessageDialog(this, "Failed to create room.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void onLeaveRoom() {
+        // Logic to leave the room
+        game.removePlayer(Driver.getPlayerName());
+        rightPanel.remove(leaveRoomButton);
+        rightPanel.revalidate();
+        rightPanel.repaint();
     }
 }
