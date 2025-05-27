@@ -23,6 +23,7 @@ public class JoinRoom extends JPanel {
 
     public static DefaultListModel<String> playerListModel;
     public JList<String> playerList;
+    public JScrollPane playerScrollPane;
 
     private Game game = Driver.getGame();
 
@@ -81,7 +82,7 @@ public class JoinRoom extends JPanel {
         // Player List
         playerListModel = new DefaultListModel<>();
         playerList = new JList<>(playerListModel);
-        JScrollPane playerScrollPane = new JScrollPane(playerList);
+        playerScrollPane = new JScrollPane(playerList);
         playerScrollPane.setPreferredSize(new Dimension(200, 150));
 
         rightPanel.add(new JLabel("Players in Room:"));
@@ -96,17 +97,12 @@ public class JoinRoom extends JPanel {
         refreshButton.addActionListener(e -> {
             // This is your function body
             onRefreshRooms();
-            rightPanel.add(leaveRoomButton);
-            rightPanel.revalidate();
-            rightPanel.repaint();
+            joinRoom();
         });
 
         createRoomButton.addActionListener(e -> {
             // This is your function body
             onCreateRoom();
-            rightPanel.add(leaveRoomButton);
-            rightPanel.revalidate();
-            rightPanel.repaint();
         });
 
         leaveRoomButton.addActionListener(e -> {
@@ -174,8 +170,8 @@ public class JoinRoom extends JPanel {
             String ip = ipAdField.getText();
             String request = "DISCOVER_ROOM";
             game.sendRequest(ip, request);
-            addDiscoveredRoom(request);
             addDiscoveredRoom(game.getRoomInfo());
+
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to discover rooms.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -184,8 +180,18 @@ public class JoinRoom extends JPanel {
     }
 
     public void onCreateRoom() {
+        clearPlayerList();
+        rightPanel.remove(leaveRoomButton);
+        rightPanel.revalidate();
+        rightPanel.repaint();
         String name = Driver.getPlayerName();
-        game.addPlayer(name, getYourIp());
+        if(game.getPlayersMap().containsKey(name)) {
+            joinRoom();
+            return;
+        }
+
+        // game.addPlayer(name, getYourIp());
+        addPlayerToList(name + ":" + getYourIp());
         System.out.println("Going Online with name " + name);
 
         if (name == null || name.trim().isEmpty()) {
@@ -205,6 +211,17 @@ public class JoinRoom extends JPanel {
         // Logic to leave the room
         game.removePlayer(Driver.getPlayerName());
         rightPanel.remove(leaveRoomButton);
+        rightPanel.revalidate();
+        rightPanel.repaint();
+    }
+
+    public void joinRoom(){
+        clearPlayerList();
+        HashMap<String, String> players = game.getPlayersMap();
+        for (String playerName : players.keySet()) {
+            addPlayerToList(playerName + ":" + players.get(playerName));
+        }
+        rightPanel.add(leaveRoomButton);
         rightPanel.revalidate();
         rightPanel.repaint();
     }

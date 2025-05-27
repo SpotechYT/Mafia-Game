@@ -29,8 +29,8 @@ public class Game {
     }
 
     public static void removePlayer(String name) {
+        JoinRoom.removePlayerFromList(name + ":" + players.get(name));
         players.remove(name);
-        JoinRoom.removePlayerFromList(name);
     }
 
     public String getPlayers() {
@@ -128,5 +128,8 @@ public class Game {
     public void stop() throws IOException {
         running = false;
         socket.close();
+    }
+    public HashMap<String, String> getPlayersMap() {
+        return players;
     }
 }
