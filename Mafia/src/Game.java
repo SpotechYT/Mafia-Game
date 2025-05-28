@@ -7,10 +7,8 @@ import java.util.HashMap;
 
 public class Game {
     private static boolean gameOver = false;
-    // Name, IP
-    private static HashMap<String, String> players = new HashMap<>();
-    // Player, Role
-    private static HashMap<String, String> roles = new HashMap<>();
+    // Player, IP
+    private static HashMap<Player, String> players = new HashMap<>();
 
     // Victim and saved player
     private String victim;
@@ -29,15 +27,15 @@ public class Game {
         new Thread(this::startListener).start();
     }
 
-    public static void addPlayer(String name, String ip) {
-        players.put(name, ip);
-        JoinRoom.addPlayerToList(name + ":" + ip);
+    public static void addPlayer(Player player, String ip) {
+        players.put(player, ip);
+        JoinRoom.addPlayerToList(player.getName() + ":" + ip);
     }
 
     public String getPlayers() {
         StringBuilder playerList = new StringBuilder();
-        for (String player : players.keySet()) {
-            playerList.append(player).append("\n");
+        for (Player player : players.keySet()) {
+            playerList.append(player.getName()).append("\n");
         }
         return playerList.toString();
     }
@@ -64,30 +62,11 @@ public class Game {
             doctor = (int)(Math.random() * players.size());
         }
 
-        for(String player : players.keySet()) {
-            if (player.equals("Mafia" + mafia)) {
-                roles.put(player, "Mafia");
-            } else if (player.equals("Doctor" + doctor)) {
-                roles.put(player, "Doctor");
-            } else {
-                roles.put(player, "Citizen");
-            }
-        }
-
         System.out.println("Roles assigned");
     }
 
     public void distributeRoles() {
-        // Send a request to each player with their role
-        for (String player : players.keySet()) {
-            String role = roles.get(player);
-            try {
-                String IP = players.get(player);
-                sendRequest(IP, "ROLE:" + role);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        // Send a request to each player with their updated player role
 
         System.out.println("Roles distributed to players");
     }
@@ -104,10 +83,10 @@ public class Game {
         contactAllPlayers("NIGHT_PHASE");
 
         // Tell the Mafia to choose a victim
-        sendRequest(roles.get("Mafia"), "CHOOSE_VICTIM");
+        //sendRequest(roles.get("Mafia"), "CHOOSE_VICTIM");
 
         // Tell the Doctor to choose a player to save
-        sendRequest(roles.get("Doctor"), "CHOOSE_PLAYER_TO_SAVE");
+        //sendRequest(roles.get("Doctor"), "CHOOSE_PLAYER_TO_SAVE");
 
         // Once the victim and saved player are chosen, process the results
         while (victim.isEmpty() || savedPlayer.isEmpty()) {
@@ -121,9 +100,11 @@ public class Game {
 
         // Generate Results
         if (victim == savedPlayer){
-            // TODO: Generate story
+            // Saved Story
+            //story = MafiaScenarioGenerator.getScenario(victim);
         } else {
-            // TODO: Generate story
+            // Deat Story
+            //story = MafiaScenarioGenerator.getScenario(victim);
         }
 
         contactAllPlayers("NIGHT_PHASE_ENDED");
@@ -143,7 +124,7 @@ public class Game {
 
     public void contactAllPlayers(String message) {
         // Send a message to all players
-        for (String player : players.keySet()) {
+        for (Player player : players.keySet()) {
             String ip = players.get(player);
             try {
                 sendRequest(ip, message);
@@ -189,7 +170,7 @@ public class Game {
                 }
                 if(request.startsWith("JOIN_ROOM:")) {
                     String playerName = request.substring(10);
-                    addPlayer(playerName, senderIP);
+                    //addPlayer(playerName, senderIP);
                     sendRequest(senderIP, getPlayers());
                     System.out.println("Player " + playerName + " joined the room.");
                 }
