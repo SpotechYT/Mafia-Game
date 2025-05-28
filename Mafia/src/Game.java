@@ -71,7 +71,7 @@ public class Game {
         System.out.println("Roles distributed to players");
     }
 
-    public void startNightPhase() throws IOException {
+    public void startNightPhase() throws Exception {
         victim = "";
         savedPlayer = "";
         story = "";
@@ -101,10 +101,10 @@ public class Game {
         // Generate Results
         if (victim == savedPlayer){
             // Saved Story
-            //story = MafiaScenarioGenerator.getScenario(victim);
+            story = MafiaScenarioGenerator.getScenario(victim, true);
         } else {
             // Deat Story
-            //story = MafiaScenarioGenerator.getScenario(victim);
+            story = MafiaScenarioGenerator.getScenario(victim, false);
         }
 
         contactAllPlayers("NIGHT_PHASE_ENDED");
@@ -113,6 +113,29 @@ public class Game {
     public void startDayPhase() {
         // Logic to start the day phase
         System.out.println("Day phase started");
+
+        // Notify players about the start of the day phase
+        contactAllPlayers("DAY_PHASE");
+        // Distribute the story to all players
+        contactAllPlayers("STORY:" + story);
+
+        // Give the players time to discuss
+        contactAllPlayers("DISCUSS");
+        try {
+            Thread.sleep(30000); // 30 seconds for discussion
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // After discussion, ask players to vote
+        contactAllPlayers("VOTE");
+
+        // Wait to recieve all votes
+        // Sum them up
+        // Kick the player with the most votes
+        // Display the results
+        contactAllPlayers("DAY_PHASE_ENDED");
+        System.out.println("Day phase ended");
     }
 
     public void endGame() throws IOException {
