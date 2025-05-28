@@ -95,7 +95,7 @@ public class SettingPanel extends JPanel {
             new SwingWorker<String, Void>() {
                 @Override
                 protected String doInBackground() throws Exception {
-                    return MafiaScenarioGenerator.getScenario(Driver.getPlayer());
+                    return MafiaScenarioGenerator.getScenario(Driver.getPlayer().getName(), false);
                 }
 
                 @Override

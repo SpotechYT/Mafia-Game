@@ -29,7 +29,7 @@ public class Game {
     }
 
     public static void removePlayer(String name) {
-        JoinRoom.removePlayerFromList(name + ":" + players.get(name));
+        JoinRoom.removePlayerFromList(name + ":" + players.get(name));        
         players.remove(name);
     }
 

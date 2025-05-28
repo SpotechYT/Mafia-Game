@@ -110,7 +110,7 @@ public class JoinRoom extends JPanel {
             // Logic to leave the room
             onLeaveRoom();
         });
-      
+        
         add(centerPanel, BorderLayout.CENTER);
     }
 
@@ -223,22 +223,37 @@ public class JoinRoom extends JPanel {
         //int i = 1;
         for (String playerName : players.keySet()) {
             addPlayerToList(playerName + ":" + players.get(playerName));
-            JButton kickButton = new JButton("Kick " + playerName);
-            kickButton.setPreferredSize(new Dimension(100, 50));
-
-            kickButton.addActionListener(ev -> {
-                game.removePlayer(playerName);
-                clearPlayerList();                             // Clear and refresh list
-                for (String name : game.getPlayersMap().keySet()) {
-                    addPlayerToList(name + ":" + game.getPlayersMap().get(name));
-                }  
-                rightPanel.remove(kickButton);   
-                rightPanel.revalidate();
-                rightPanel.repaint();
-            });
-
-            rightPanel.add(kickButton);
         }
+        playerList.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int index = playerList.locationToIndex(e.getPoint());
+                if (index != -1) {
+                    rightReset();
+                    String playerName = playerList.getModel().getElementAt(index).split(":")[0];
+                    System.out.println("Clicked player: " + playerName);
+
+                    JButton kickButton = new JButton("Kick " + playerName);
+                    kickButton.setPreferredSize(new Dimension(100, 50));
+                    kickButton.addActionListener(ev -> {
+                        game.removePlayer(playerName);
+                        try {
+                            game.sendRequest(players.get(playerName), "KICK_PLAYER:" + playerName);
+                        } catch (IOException ex) {
+                        }
+                        clearPlayerList();
+                        for (String name : game.getPlayersMap().keySet()) {
+                            addPlayerToList(name + ":" + game.getPlayersMap().get(name));
+                        }
+                    });
+                    rightPanel.add(kickButton);
+                    rightPanel.add(leaveRoomButton);
+                    rightPanel.revalidate();
+                    rightPanel.repaint();
+                }
+            }
+        });
+            
         rightPanel.add(leaveRoomButton);
         rightPanel.revalidate();
         rightPanel.repaint();
