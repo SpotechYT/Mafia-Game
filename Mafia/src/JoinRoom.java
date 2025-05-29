@@ -49,7 +49,7 @@ public class JoinRoom extends JPanel {
         backButton = new JButton("Back");
         topPanel.add(backButton, BorderLayout.WEST);
 
-        ipLabel = new JLabel("Your IP: " + getYourIp(), SwingConstants.CENTER);
+        ipLabel = new JLabel("Your IP: " + Driver.getYourIp(), SwingConstants.CENTER);
         ipLabel.setFont(ipLabel.getFont().deriveFont(Font.BOLD, 14f));
         topPanel.add(ipLabel, BorderLayout.CENTER);
 
@@ -117,28 +117,6 @@ public class JoinRoom extends JPanel {
     }
 
     // ====== Utility Methods ======
-    public String getYourIp() {
-        try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface iface = interfaces.nextElement();
-                // Skip loopback and down interfaces
-                if (iface.isLoopback() || !iface.isUp()) continue;
-
-                Enumeration<InetAddress> addresses = iface.getInetAddresses();
-                while (addresses.hasMoreElements()) {
-                    InetAddress addr = addresses.nextElement();
-                    if (addr instanceof Inet4Address && !addr.isLoopbackAddress()) {
-                        return addr.getHostAddress();
-                    }
-                }
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public void addDiscoveredRoom(String roomInfo) {
         String entry = roomInfo;
         if (!roomListModel.contains(entry)) {

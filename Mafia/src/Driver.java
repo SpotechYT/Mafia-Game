@@ -1,5 +1,10 @@
 
 import java.awt.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 import javax.swing.*;
 
 public class Driver {
@@ -8,6 +13,7 @@ public class Driver {
     static CardLayout cardLayout = new CardLayout();
     static JPanel mainPanel = new JPanel(cardLayout);
     private static String playerName = "Player" + (int) (Math.random() * 1000);
+    private static String role;
     private static Game game;
 
     public static void main(String[] args) throws Exception {
@@ -20,12 +26,42 @@ public class Driver {
         return game;
     }
 
+    public static String getRole() {
+        return role;
+    }
+
+    public static void setRole(String givenRole) {
+        role = givenRole;
+    }
+
     public static String getPlayerName() {
         return playerName;
     }
 
     public static void setPlayerName(String name) {
         playerName = name;
+    }
+
+    public static String getYourIp() {
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+                // Skip loopback and down interfaces
+                if (iface.isLoopback() || !iface.isUp()) continue;
+
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    if (addr instanceof Inet4Address && !addr.isLoopbackAddress()) {
+                        return addr.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static void Jframes() throws Exception {
