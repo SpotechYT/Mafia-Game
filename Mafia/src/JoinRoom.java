@@ -240,6 +240,7 @@ public class JoinRoom extends JPanel {
                         try {
                             game.sendRequest(players.get(playerName), "KICK_PLAYER:" + playerName);
                         } catch (IOException ex) {
+                            ex.printStackTrace();
                         }
                         clearPlayerList();
                         for (String name : game.getPlayersMap().keySet()) {
