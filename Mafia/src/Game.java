@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class Game {
     private static boolean gameOver = false;
     // Player, IP
-    private static HashMap<Player, String> players = new HashMap<>();
+    private static HashMap<String, String> players = new HashMap<>();
 
     // Victim and saved player
     private String victim;
@@ -27,15 +27,15 @@ public class Game {
         new Thread(this::startListener).start();
     }
 
-    public static void addPlayer(Player player, String ip) {
+    public static void addPlayer(String player, String ip) {
         players.put(player, ip);
-        JoinRoom.addPlayerToList(player.getName() + ":" + ip);
+        JoinRoom.addPlayerToList(player + ":" + ip);
     }
 
     public String getPlayers() {
         StringBuilder playerList = new StringBuilder();
-        for (Player player : players.keySet()) {
-            playerList.append(player.getName()).append("\n");
+        for (String player : players.keySet()) {
+            playerList.append(player).append("\n");
         }
         return playerList.toString();
     }
@@ -99,7 +99,7 @@ public class Game {
         }
 
         // Generate Results
-        if (victim == savedPlayer){
+        if (victim.equals(savedPlayer)){
             // Saved Story
             story = MafiaScenarioGenerator.getScenario(victim, true);
         } else {
@@ -147,7 +147,7 @@ public class Game {
 
     public void contactAllPlayers(String message) {
         // Send a message to all players
-        for (Player player : players.keySet()) {
+        for (String player : players.keySet()) {
             String ip = players.get(player);
             try {
                 sendRequest(ip, message);
