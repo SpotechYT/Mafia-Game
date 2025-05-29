@@ -4,11 +4,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -160,7 +155,7 @@ public class JoinRoom extends JPanel {
 
     public void onCreateRoom() {
         String name = Driver.getPlayerName();
-        //game.addPlayer(name, getYourIp());
+        game.addPlayer(name, Driver.getYourIp());
         System.out.println("Going Online with name" + name);
 
         if (name == null || name.trim().isEmpty()) {
