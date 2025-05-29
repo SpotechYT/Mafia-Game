@@ -29,6 +29,7 @@ public class JoinRoom extends JPanel {
     public JTextField roomNameField;
     public JTextField ipAdField;
     public JButton createRoomButton;
+    public JButton startGameButton;
 
     public static DefaultListModel<String> playerListModel;
     public JList<String> playerList;
@@ -93,6 +94,12 @@ public class JoinRoom extends JPanel {
 
         rightPanel.add(new JLabel("Players in Room:"));
         rightPanel.add(playerScrollPane);
+
+        startGameButton = new JButton("Start Game");
+
+        rightPanel.add(Box.createVerticalStrut(10));
+        rightPanel.add(startGameButton);
+        rightPanel.add(Box.createVerticalStrut(20));
 
         rightPanel.add(Box.createVerticalGlue());
 

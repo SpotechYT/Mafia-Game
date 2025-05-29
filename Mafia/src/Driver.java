@@ -86,6 +86,8 @@ public class Driver {
         linkButton(mainMenu.playButton, "JoinRoom");
         linkButton(mainMenu.settingsButton, "SettingPanel");
         linkButton(joinRoom.backButton, "MainMenu");
+        linkButton(joinRoom.startGameButton, "GamePanel");
+        linkButton(gamePanel.backButton, "MainMenu");
         linkButton(settingPanel.backButton, "MainMenu");
 
         // Set the content pane

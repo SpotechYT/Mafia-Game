@@ -13,7 +13,7 @@ public class GamePanel extends JPanel {
 
         // Create a top panel for the back button
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        backButton = new JButton("Back");
+        backButton = new JButton("Quit Game");
 
         // Add back button to the top panel
         topPanel.add(backButton);
