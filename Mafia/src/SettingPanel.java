@@ -1,5 +1,6 @@
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.ImageIcon;
 
 public class SettingPanel extends JPanel {
 
@@ -8,13 +9,17 @@ public class SettingPanel extends JPanel {
     public JPanel centerPanel;
     public JPanel rightPanel;
     public JButton generateButton;
+    
 
     public SettingPanel() throws Exception {
         // Set layout
         setLayout(new BorderLayout());
         // Create a top panel for the back button
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        backButton = new JButton("Back");
+        backButton = new JButton();
+        ImageIcon backIcon = new ImageIcon("Graphics/back1.png");
+        backButton.setIcon(backIcon);
+        backButton.setBackground(Color.black);
 
         // Add back button to the top panel
         topPanel.add(backButton);
@@ -26,8 +31,14 @@ public class SettingPanel extends JPanel {
 
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        nameButton = new JButton("Change Name");
-        generateButton = new JButton("Generate Scenario");
+        nameButton = new JButton();
+        ImageIcon icon = new ImageIcon("Graphics/changename2.png");
+        nameButton.setIcon(icon);
+        nameButton.setBackground(Color.black);
+        generateButton = new JButton();
+        ImageIcon Icon2 = new ImageIcon("Graphics/senario.png");
+        generateButton.setIcon(Icon2);
+        generateButton.setBackground(Color.black);
         leftPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
         leftPanel.add(new JScrollPane(nameButton));
         leftPanel.add(new JScrollPane(generateButton));
@@ -49,7 +60,10 @@ public class SettingPanel extends JPanel {
             nameTextPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
             nameTextPane.setMinimumSize(new Dimension(Integer.MAX_VALUE, 30));
             rightPanel.add(nameTextPane);
-            JButton newName = new JButton("Change");
+            JButton newName = new JButton();
+            ImageIcon icon3 = new ImageIcon("Graphics/change.png");
+            newName.setIcon(icon3);
+            newName.setBackground(Color.black);
             newName.addActionListener(ev -> {
                 String name = nameTextPane.getText();
                 Driver.setPlayerName(name);
@@ -105,7 +119,11 @@ public class SettingPanel extends JPanel {
             scenarioTextArea.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
             rightPanel.add(scenarioTextArea);
 
-            JButton generate = new JButton("Back");
+            JButton generate = new JButton();
+            ImageIcon icon4 = new ImageIcon("Graphics/back2.png");
+            generate.setIcon(icon4);
+            generate.setBackground(Color.black);
+
             generate.addActionListener(ev -> {
                 resetSettings();
             });

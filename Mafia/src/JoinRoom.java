@@ -1,5 +1,6 @@
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -21,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
 
 public class JoinRoom extends JPanel {
 
@@ -46,7 +48,11 @@ public class JoinRoom extends JPanel {
         // --- TOP PANEL ---
         JPanel topPanel = new JPanel(new BorderLayout());
 
-        backButton = new JButton("Back");
+        backButton = new JButton();
+        ImageIcon backIcon = new ImageIcon("Graphics/back1.png");
+        backButton.setIcon(backIcon);
+        backButton.setBackground(Color.black);
+        backButton.setBorder(null);
         topPanel.add(backButton, BorderLayout.WEST);
 
         ipLabel = new JLabel("Your IP: " + getYourIp(), SwingConstants.CENTER);
@@ -73,7 +79,11 @@ public class JoinRoom extends JPanel {
         leftPanel.add(ipAdField);
         leftPanel.add(new JScrollPane(roomList), BorderLayout.CENTER);
 
-        refreshButton = new JButton("Connect");
+        refreshButton = new JButton();
+        ImageIcon refreshIcon = new ImageIcon("Graphics/connect.png");
+        refreshButton.setIcon(refreshIcon);
+        refreshButton.setBackground(Color.black);
+        refreshButton.setBorder(null);
         leftPanel.add(refreshButton, BorderLayout.SOUTH);
 
         centerPanel.add(leftPanel);
@@ -84,7 +94,11 @@ public class JoinRoom extends JPanel {
         rightPanel.setBorder(BorderFactory.createTitledBorder("Host a Room"));
 
         // Room creation fields
-        createRoomButton = new JButton("Go Online");
+        createRoomButton = new JButton();
+        ImageIcon createRoomIcon = new ImageIcon("Graphics/online.png");
+        createRoomButton.setIcon(createRoomIcon);
+        createRoomButton.setBackground(Color.black);
+        createRoomButton.setBorder(null);
 
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(createRoomButton);
