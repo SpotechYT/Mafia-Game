@@ -134,6 +134,8 @@ public class JoinRoom extends JPanel {
         if (!playerListModel.contains(playerName)) {
             playerListModel.addElement(playerName);
         }
+
+        GamePanel.updatePlayers();
     }
 
     public void removePlayerFromList(String playerName) {

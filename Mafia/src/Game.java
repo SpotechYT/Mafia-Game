@@ -247,6 +247,12 @@ public class Game {
                     Driver.setRole(role);
                     System.out.println("Assigned role: " + role + " to player: " + Driver.getPlayerName());
                 }
+                if(request.startsWith("CHAT:")) {
+                    String chatMessage = request.substring(5);
+                    GamePanel.chatListModel.addElement(chatMessage);
+                    // Scroll to the bottom of the chat list
+                    GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
+                }
                 if (request.equals("NIGHT_PHASE")) {
                     // Do Something
                 }
