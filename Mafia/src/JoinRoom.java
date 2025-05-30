@@ -1,41 +1,55 @@
 
-import java.awt.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import javax.swing.*;
-
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.io.IOException;
+import java.util.HashMap;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class JoinRoom extends JPanel {
 
-    public JPanel rightPanel;
     public JButton backButton;
     public JLabel ipLabel;
 
     public DefaultListModel<String> roomListModel;
     public JList<String> roomList;
     public JButton refreshButton;
+    public JButton leaveRoomButton;
 
     public JTextField roomNameField;
     public JTextField ipAdField;
     public JButton createRoomButton;
-    public JButton leaveRoomButton;
+    public JButton startGameButton;
+    public JPanel rightPanel;
+    public JScrollPane playerScrollPane;
 
     public static DefaultListModel<String> playerListModel;
     public JList<String> playerList;
-    public JScrollPane playerScrollPane;
-   
+
     private Game game = Driver.getGame();
 
     public JoinRoom() {
         setLayout(new BorderLayout());
+
         // --- TOP PANEL ---
         JPanel topPanel = new JPanel(new BorderLayout());
 
         backButton = new JButton("Back");
         topPanel.add(backButton, BorderLayout.WEST);
 
-        ipLabel = new JLabel("Your IP: " + getYourIp(), SwingConstants.CENTER);
+        ipLabel = new JLabel("Your IP: " + Driver.getYourIp(), SwingConstants.CENTER);
         ipLabel.setFont(ipLabel.getFont().deriveFont(Font.BOLD, 14f));
         topPanel.add(ipLabel, BorderLayout.CENTER);
 
@@ -76,8 +90,6 @@ public class JoinRoom extends JPanel {
         rightPanel.add(createRoomButton);
         rightPanel.add(Box.createVerticalStrut(20));
 
-        
-
         // Player List
         playerListModel = new DefaultListModel<>();
         playerList = new JList<>(playerListModel);
@@ -87,7 +99,11 @@ public class JoinRoom extends JPanel {
         rightPanel.add(new JLabel("Players in Room:"));
         rightPanel.add(playerScrollPane);
 
-        leaveRoomButton = new JButton("Leave Room");
+        startGameButton = new JButton("Start Game");
+
+        rightPanel.add(Box.createVerticalStrut(10));
+        rightPanel.add(startGameButton);
+        rightPanel.add(Box.createVerticalStrut(20));
 
         rightPanel.add(Box.createVerticalGlue());
 
@@ -96,14 +112,11 @@ public class JoinRoom extends JPanel {
         refreshButton.addActionListener(e -> {
             // This is your function body
             onRefreshRooms();
-            joinRoom();
-            joinRoom();
         });
 
         createRoomButton.addActionListener(e -> {
             // This is your function body
             onCreateRoom();
-
         });
 
         leaveRoomButton.addActionListener(e -> {
@@ -115,29 +128,6 @@ public class JoinRoom extends JPanel {
     }
 
     // ====== Utility Methods ======
-    public String getYourIp() {
-        try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface iface = interfaces.nextElement();
-                // Skip loopback and down interfaces
-                if (iface.isLoopback() || !iface.isUp()) continue;
-
-                Enumeration<InetAddress> addresses = iface.getInetAddresses();
-                while (addresses.hasMoreElements()) {
-                    InetAddress addr = addresses.nextElement();
-                    if (addr instanceof Inet4Address && !addr.isLoopbackAddress()) {
-                        return addr.getHostAddress();
-                    }
-                }
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    
     public void addDiscoveredRoom(String roomInfo) {
         String entry = roomInfo;
         if (!roomListModel.contains(entry)) {
@@ -153,6 +143,8 @@ public class JoinRoom extends JPanel {
         if (!playerListModel.contains(playerName)) {
             playerListModel.addElement(playerName);
         }
+
+        GamePanel.updatePlayers();
     }
 
     public static void removePlayerFromList(String playerName) {
@@ -173,27 +165,16 @@ public class JoinRoom extends JPanel {
             String request = "DISCOVER_ROOM";
             game.sendRequest(ip, request);
             addDiscoveredRoom(game.getRoomInfo());
-
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to discover rooms.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }
 
     public void onCreateRoom() {
-        clearPlayerList();
-        rightReset();
-        rightPanel.revalidate();
-        rightPanel.repaint();
         String name = Driver.getPlayerName();
-        if(game.getPlayersMap().containsKey(name)) {
-            joinRoom();
-            return;
-        }
-
-        addPlayerToList(name + ":" + getYourIp());
-        System.out.println("Going Online with name " + name);
+        game.addPlayer(name, Driver.getYourIp());
+        System.out.println("Going Online with name" + name);
 
         if (name == null || name.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Room name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
