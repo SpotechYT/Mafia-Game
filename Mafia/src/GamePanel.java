@@ -83,6 +83,16 @@ public class GamePanel extends JPanel {
             // This is your function body
             sendChatMessage(chatField.getText());
         });
+
+        // Replace VK_YOUR_KEY with the desired key code, e.g., VK_A for 'A' key
+        chatField.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                    sendChatMessage(chatField.getText());
+                }
+            }
+        });
     }
 
     public static void updatePlayers(){

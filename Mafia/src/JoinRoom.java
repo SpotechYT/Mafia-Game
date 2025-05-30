@@ -113,12 +113,12 @@ public class JoinRoom extends JPanel {
         refreshButton.addActionListener(e -> {
             // This is your function body
             onRefreshRooms();
+            joinRoom();
         });
 
         createRoomButton.addActionListener(e -> {
             // This is your function body
             onCreateRoom();
-            joinRoom();
         });
 
         leaveRoomButton.addActionListener(e -> {
