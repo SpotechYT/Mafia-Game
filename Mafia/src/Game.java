@@ -246,7 +246,7 @@ public class Game {
                 }
                 if(request.startsWith("JOIN_ROOM:")) {
                     String playerName = request.substring(10);
-                    //addPlayer(playerName, senderIP);
+                    addPlayer(playerName, senderIP);
                     sendRequest(senderIP, "PLAYERS:" + getPlayersAndIPs());
                     System.out.println("Player " + playerName + " joined the room.");
                 }
@@ -273,6 +273,12 @@ public class Game {
                     String chatMessage = request.substring(5);
                     GamePanel.chatListModel.addElement(chatMessage);
                     // Scroll to the bottom of the chat list
+                    GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
+                }
+                if(request.startsWith("LEAVE:")) {
+                    String playerLeaving = request.substring(6);
+                    GamePanel.chatListModel.addElement(playerLeaving + " has left the game.");
+                    // Notify all players about the player leaving
                     GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
                 }
                 if (request.equals("NIGHT_PHASE")) {

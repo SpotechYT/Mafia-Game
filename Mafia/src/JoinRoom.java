@@ -100,6 +100,7 @@ public class JoinRoom extends JPanel {
         rightPanel.add(playerScrollPane);
 
         startGameButton = new JButton("Start Game");
+        leaveRoomButton = new JButton("Leave Room");
 
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(startGameButton);
@@ -117,6 +118,7 @@ public class JoinRoom extends JPanel {
         createRoomButton.addActionListener(e -> {
             // This is your function body
             onCreateRoom();
+            joinRoom();
         });
 
         leaveRoomButton.addActionListener(e -> {
@@ -191,8 +193,9 @@ public class JoinRoom extends JPanel {
 
     public void onLeaveRoom() {
         // Logic to leave the room
+        game.contactAllPlayers("LEAVE:" + Driver.getPlayerName());
         game.removePlayer(Driver.getPlayerName());
-        rightPanel.remove(leaveRoomButton);
+        rightReset();
         rightPanel.revalidate();
         rightPanel.repaint();
     }
@@ -227,15 +230,16 @@ public class JoinRoom extends JPanel {
                         for (String name : game.getPlayersMap().keySet()) {
                             addPlayerToList(name + ":" + game.getPlayersMap().get(name));
                         }
+                        rightPanel.remove(kickButton);
+                        rightReset();
                     });
-                    rightPanel.add(kickButton);
                     rightPanel.add(leaveRoomButton);
+                    rightPanel.add(kickButton);
                     rightPanel.revalidate();
                     rightPanel.repaint();
                 }
             }
         });
-            
         rightPanel.add(leaveRoomButton);
         rightPanel.revalidate();
         rightPanel.repaint();
@@ -251,6 +255,9 @@ public class JoinRoom extends JPanel {
         playerScrollPane.setPreferredSize(new Dimension(200, 150));
         rightPanel.add(new JLabel("Players in Room:"));
         rightPanel.add(playerScrollPane);
+        rightPanel.add(Box.createVerticalStrut(10));
+        rightPanel.add(startGameButton);
+        rightPanel.add(Box.createVerticalStrut(20));
         rightPanel.add(Box.createVerticalGlue());
 
         

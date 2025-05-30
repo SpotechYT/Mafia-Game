@@ -21,6 +21,7 @@ public class GamePanel extends JPanel {
     public JButton chatButton;
 
     public static JPanel rightPanel;
+    public static JButton leaveButton;
 
     public GamePanel() {
         // Set layout
@@ -51,7 +52,6 @@ public class GamePanel extends JPanel {
 
         chatButton = new JButton("sendChat");
         leftPanel.add(chatButton, BorderLayout.SOUTH);
-
         mainPanel.add(leftPanel);
 
         rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
@@ -73,6 +73,11 @@ public class GamePanel extends JPanel {
         // Add bottom panel to the bottom (SOUTH) of the main panel
         //add(bottomPanel, BorderLayout.SOUTH);
 
+        backButton.addActionListener(e -> {
+            // This is your function body
+            Driver.getGame().contactAllPlayers("LEAVE:" + Driver.getPlayerName());
+            Driver.getGame().removePlayer(Driver.getPlayerName());
+        });
 
         chatButton.addActionListener(e -> {
             // This is your function body
