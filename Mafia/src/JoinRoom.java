@@ -142,7 +142,7 @@ public class JoinRoom extends JPanel {
         playerListModel.removeElement(playerName);
     }
 
-    public void clearPlayerList() {
+    public static void clearPlayerList() {
         playerListModel.clear();
     }
 

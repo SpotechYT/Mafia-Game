@@ -44,6 +44,14 @@ public class Game {
         return playerList.toString();
     }
 
+    public String getPlayersAndIPs() {
+        StringBuilder playerList = new StringBuilder();
+        for (String player : players.keySet()) {
+            playerList.append(player).append(":").append(players.get(player)).append("\n");
+        }
+        return playerList.toString();
+    }
+
     public void startGame() {
         roomOpen = false;
 
@@ -234,8 +242,17 @@ public class Game {
                 if(request.startsWith("JOIN_ROOM:")) {
                     String playerName = request.substring(10);
                     //addPlayer(playerName, senderIP);
-                    sendRequest(senderIP, getPlayers());
+                    sendRequest(senderIP, "PLAYERS:" + getPlayersAndIPs());
                     System.out.println("Player " + playerName + " joined the room.");
+                }
+                if(request.startsWith("PLAYERS:")) {
+                    String playersList = request.substring(8);
+                    JoinRoom.clearPlayerList();
+                    for (String player : playersList.split("\n")) {
+                        String name = player.split(":")[0];
+                        String ip = player.split(":")[1];
+                        addPlayer(name, ip);
+                    }
                 }
                 
                 // requests for game logic
