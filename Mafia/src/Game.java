@@ -27,8 +27,8 @@ public class Game {
 
     public void goOnline() throws IOException {
         // Start the listener thread
-        new Thread(this::startListener).start();
         roomOpen = true;
+        new Thread(this::startListener).start();
     }
 
     public static void addPlayer(String player, String ip) {
@@ -254,7 +254,7 @@ public class Game {
                         addPlayer(name, ip);
                     }
                 }
-                if(request.equals("LEAVE_ROOM")) {
+                if(request.equals("PLAYER_LEFT")) {
                     String playerName = players.get(senderIP);
                     players.remove(playerName);
                     try{
@@ -263,6 +263,8 @@ public class Game {
                         System.out.println("No role assigned to player: " + playerName);
                     }
                     JoinRoom.removePlayerFromList(playerName);
+                    GamePanel.updatePlayers();
+                    System.out.println("Player " + playerName + " left the room.");
                 }
                 
                 // requests for game logic
