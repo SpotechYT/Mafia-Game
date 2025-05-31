@@ -22,6 +22,8 @@ public class GamePanel extends JPanel {
 
     public static JPanel rightPanel;
 
+    private Game game = Driver.getGame();
+
     public GamePanel() {
         // Set layout
         setLayout(new BorderLayout());
@@ -78,6 +80,11 @@ public class GamePanel extends JPanel {
             // This is your function body
             sendChatMessage(chatField.getText());
         });
+
+        backButton.addActionListener(e -> {
+            // This is your function body
+            leaveRoom();
+        });
     }
 
     public static void updatePlayers(){
@@ -96,6 +103,16 @@ public class GamePanel extends JPanel {
 
     public void sendChatMessage(String message) {
         // Send a chat message to all players
-        Driver.getGame().contactAllPlayers("CHAT:" + Driver.getPlayerName() + ": " + message);
+        game.contactAllPlayers("CHAT:" + Driver.getPlayerName() + ": " + message);
+    }
+
+    public void sendServerMessage(String message) {
+        // Send a chat message to all players
+        game.contactAllPlayers("SERVER_MESSAGE:" + message);
+    }
+
+    public void leaveRoom() {
+        game.leaveRoom();
+        sendServerMessage(Driver.getPlayerName() + " has left the room.");
     }
 }

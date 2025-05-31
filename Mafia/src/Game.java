@@ -254,6 +254,16 @@ public class Game {
                         addPlayer(name, ip);
                     }
                 }
+                if(request.equals("LEAVE_ROOM")) {
+                    String playerName = players.get(senderIP);
+                    players.remove(playerName);
+                    try{
+                        roles.remove(playerName);
+                    } catch (Exception e) {
+                        System.out.println("No role assigned to player: " + playerName);
+                    }
+                    JoinRoom.removePlayerFromList(playerName);
+                }
                 
                 // requests for game logic
                 if(request.equals("START_GAME")) {
@@ -266,6 +276,12 @@ public class Game {
                 }
                 if(request.startsWith("CHAT:")) {
                     String chatMessage = request.substring(5);
+                    GamePanel.chatListModel.addElement(chatMessage);
+                    // Scroll to the bottom of the chat list
+                    GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
+                }
+                if (request.startsWith("SERVER_MESSAGE:")) {
+                    String chatMessage = request.substring(15);
                     GamePanel.chatListModel.addElement(chatMessage);
                     // Scroll to the bottom of the chat list
                     GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
@@ -303,6 +319,20 @@ public class Game {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public String leaveRoom(){
+        if (roomOpen) {
+            roomOpen = false;
+            roomInfo = "Not in a room";
+            players.clear();
+            roles.clear();
+            JoinRoom.clearPlayerList();
+            contactAllPlayers("PLAYER_LEFT");
+            return "You have left the room.";
+        } else {
+            return "You are not in a room.";
         }
     }
 

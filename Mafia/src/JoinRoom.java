@@ -115,6 +115,11 @@ public class JoinRoom extends JPanel {
             onCreateRoom();
         });
 
+        backButton.addActionListener(e -> {
+            // This is your function body
+            game.leaveRoom();
+        });
+
         add(centerPanel, BorderLayout.CENTER);
     }
 
@@ -138,7 +143,7 @@ public class JoinRoom extends JPanel {
         GamePanel.updatePlayers();
     }
 
-    public void removePlayerFromList(String playerName) {
+    public static void removePlayerFromList(String playerName) {
         playerListModel.removeElement(playerName);
     }
 
