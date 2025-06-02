@@ -326,9 +326,19 @@ public class Game {
             roles.clear();
             JoinRoom.clearPlayerList();
             contactAllPlayers("PLAYER_LEFT");
+            try {
+                stop();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return "You have left the room.";
         } else {
-            return "You are not in a room.";
+            try{
+                stop();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+         return "You are not in a room.";
         }
     }
 
