@@ -6,13 +6,13 @@ import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ImageIcon;
-
+import javax.swing.border.TitledBorder;
 
 public class GamePanel extends JPanel {
 
@@ -30,28 +30,33 @@ public class GamePanel extends JPanel {
     public GamePanel() {
         // Set layout
         setLayout(new BorderLayout());
+        setBackground(java.awt.Color.BLACK);
 
         // Create a top panel for the back button
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.setBackground(java.awt.Color.BLACK);
         backButton = new JButton();
         ImageIcon back = new ImageIcon("Graphics/back1.png");
         backButton.setIcon(back);
         backButton.setBackground(Color.black);
 
-
         // Add back button to the top panel
         topPanel.add(backButton);
-
         // Create the main panel split in two, with chat on the left and on the right, with the players side by side, evenly spaced
         JPanel mainPanel = new JPanel(new GridLayout(1, 2));
+        mainPanel.setBackground(java.awt.Color.BLACK);
         JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.setBackground(java.awt.Color.BLACK);
         rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        rightPanel.setBackground(java.awt.Color.BLACK);
 
         chatListModel = new DefaultListModel<>();
         chatList = new JList<>(chatListModel);
 
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.setBorder(BorderFactory.createTitledBorder("Chat Room"));
+        TitledBorder border = BorderFactory.createTitledBorder("Chat Room");
+        border.setTitleColor(Color.WHITE);
+        leftPanel.setBorder(border);
         chatField = new JTextField();
         chatField.setText("Type your message here...");
         chatField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
