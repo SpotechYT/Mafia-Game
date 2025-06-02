@@ -12,10 +12,14 @@ public class MainMenu extends JPanel {
     public MainMenu() {
         setLayout(new BorderLayout());
 
+        setBackground(java.awt.Color.BLACK);
+
         JLabel label = new JLabel("The Mafia Game", JLabel.CENTER);
+        label.setForeground(java.awt.Color.WHITE);
         add(label, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 10));
+        buttonPanel.setBackground(java.awt.Color.BLACK);
         playButton = new JButton("Play");
         settingsButton = new JButton("Settings");
 
