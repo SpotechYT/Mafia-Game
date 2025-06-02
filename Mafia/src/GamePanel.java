@@ -1,11 +1,28 @@
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 public class GamePanel extends JPanel {
 
     public JButton backButton;
+
+    public JTextField chatField;
+    public static DefaultListModel<String> chatListModel;
+    public static JList<String> chatList;
+    public JButton chatButton;
+
+    public static JPanel rightPanel;
+
+    private Game game = Driver.getGame();
 
     public GamePanel() {
         // Set layout
@@ -13,14 +30,89 @@ public class GamePanel extends JPanel {
 
         // Create a top panel for the back button
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        backButton = new JButton("Back");
+        backButton = new JButton("Quit Game");
 
         // Add back button to the top panel
         topPanel.add(backButton);
 
+        // Create the main panel split in two, with chat on the left and on the right, with the players side by side, evenly spaced
+        JPanel mainPanel = new JPanel(new GridLayout(1, 2));
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        chatListModel = new DefaultListModel<>();
+        chatList = new JList<>(chatListModel);
+
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.setBorder(BorderFactory.createTitledBorder("Chat Room"));
+        chatField = new JTextField();
+        chatField.setText("Type your message here...");
+        chatField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        leftPanel.add(chatField);
+        leftPanel.add(new JScrollPane(chatList), BorderLayout.CENTER);
+
+        chatButton = new JButton("sendChat");
+        leftPanel.add(chatButton, BorderLayout.SOUTH);
+
+        mainPanel.add(leftPanel);
+
+        rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
+        updatePlayers();
+
+        mainPanel.add(rightPanel);
+
+        // // Create the bottom panel for game controls
+        // JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        // bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
+        // // Buttons to add: leave room, vote kick
+        // JButton leaveRoomButton = new JButton("Leave Room");
+        // bottomPanel.add(leaveRoomButton);
+
         // Add top panel to the top (NORTH) of the main panel
         add(topPanel, BorderLayout.NORTH);
+        // Add main panel to the center of the main panel
+        add(mainPanel, BorderLayout.CENTER);
+        // Add bottom panel to the bottom (SOUTH) of the main panel
+        //add(bottomPanel, BorderLayout.SOUTH);
 
-        // You can add game content to other parts of the panel later
+
+        chatButton.addActionListener(e -> {
+            // This is your function body
+            sendChatMessage(chatField.getText());
+        });
+
+        backButton.addActionListener(e -> {
+            // This is your function body
+            leaveRoom();
+        });
+    }
+
+    public static void updatePlayers(){
+        //remove all existing buttons from the right panel
+        rightPanel.removeAll();
+
+        // add the players to the right panel
+        for (String player : Driver.getGame().getPlayers().split("\n")) {
+            JButton playerButton = new JButton(player);
+            playerButton.setPreferredSize(new java.awt.Dimension(150, 50)); // Set a preferred size for each button
+            // Set the button to the player name
+            playerButton.setText(player);
+            rightPanel.add(playerButton);
+        }
+    }
+
+    public void sendChatMessage(String message) {
+        // Send a chat message to all players
+        game.contactAllPlayers("CHAT:" + Driver.getPlayerName() + ": " + message);
+    }
+
+    public void sendServerMessage(String message) {
+        // Send a chat message to all players
+        game.contactAllPlayers("CHAT:" + message);
+    }
+
+    public void leaveRoom() {
+        game.leaveRoom();
+        sendServerMessage(Driver.getPlayerName() + " has left the room.");
     }
 }

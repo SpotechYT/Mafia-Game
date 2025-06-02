@@ -6,11 +6,16 @@ import java.net.InetAddress;
 import java.util.HashMap;
 
 public class Game {
-    private static boolean gameOver = false;
-    // Name, IP
+    
+    // Player, IP
     private static HashMap<String, String> players = new HashMap<>();
-    // Player, Role
     private static HashMap<String, String> roles = new HashMap<>();
+
+    // Game variables
+    private String victim;
+    private String savedPlayer;
+    private String story;
+    private static boolean gameOver = false;
 
     // Networking
     private boolean running = true;
@@ -18,15 +23,17 @@ public class Game {
     private DatagramSocket socket;
 
     private String roomInfo = "Not in a room";
+    private boolean roomOpen = false;
 
     public void goOnline() throws IOException {
         // Start the listener thread
+        roomOpen = true;
         new Thread(this::startListener).start();
     }
 
-    public static void addPlayer(String name, String ip) {
-        players.put(name, ip);
-        JoinRoom.addPlayerToList(name + ":" + ip);
+    public static void addPlayer(String player, String ip) {
+        players.put(player, ip);
+        JoinRoom.addPlayerToList(player + ":" + ip);
     }
 
     public String getPlayers() {
@@ -37,17 +44,32 @@ public class Game {
         return playerList.toString();
     }
 
+    public String getPlayersAndIPs() {
+        StringBuilder playerList = new StringBuilder();
+        for (String player : players.keySet()) {
+            playerList.append(player).append(":").append(players.get(player)).append("\n");
+        }
+        return playerList.toString();
+    }
+
     public void startGame() {
+        roomOpen = false;
+
         // Initialize game logic here
         System.out.println("Game started!");
+        contactAllPlayers("GAME_STARTED");
         // Add your game logic here
 
         assignRoles();
         while(!gameOver) {
             // Game loop
-            // Check for game over conditions
-            // If game over, set gameOver = true;
-            gameOver = true;
+            try {
+                startNightPhase();
+                startDayPhase();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //gameOver = true;
         }
     }
 
@@ -59,17 +81,122 @@ public class Game {
             doctor = (int)(Math.random() * players.size());
         }
 
-        System.out.println("Roles assigned!");
+        for(String player : players.keySet()) {
+            if (mafia == 0) {
+                roles.put(player, "Mafia");
+            } else if (doctor == 0) {
+                roles.put(player, "Doctor");
+            } else {
+                roles.put(player, "Citizen");
+            }
+            mafia--;
+            doctor--;
+        }
+
+        System.out.println("Roles assigned");
+        distributeRoles();
     }
 
-    public void startNightPhase() {
+    public void distributeRoles() {
+        // Send a request to each player with their updated player role
+        for (String player : players.keySet()) {
+            String role = roles.get(player);
+            String ip = players.get(player);
+            try {
+                sendRequest(ip, "ROLE:" + role);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Roles distributed to players");
+    }
+
+    public void startNightPhase() throws Exception {
+        victim = "";
+        savedPlayer = "";
+        story = "";
+
         // Logic to start the night phase
-        System.out.println("Night phase started!");
+        System.out.println("Night phase started");
+
+        // Tell the players that the night phase has started
+        contactAllPlayers("NIGHT_PHASE");
+
+        // Tell the Mafia to choose a victim
+        sendRequest(roles.get("Mafia"), "CHOOSE_VICTIM");
+
+        // Tell the Doctor to choose a player to save
+        sendRequest(roles.get("Doctor"), "CHOOSE_SAVE");
+
+        System.out.println("Waiting for players to choose victim and saved player...");
+
+        // Once the victim and saved player are chosen, process the results
+        while (victim.isEmpty() || savedPlayer.isEmpty()) {
+            // Wait for the victim and saved player to be set
+            try {
+                Thread.sleep(500); // Sleep for a second before checking again
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Generate Results
+        if (victim.equals(savedPlayer)){
+            // Saved Story
+            story = MafiaScenarioGenerator.getScenario(victim, true);
+        } else {
+            // Deat Story
+            story = MafiaScenarioGenerator.getScenario(victim, false);
+        }
     }
 
     public void startDayPhase() {
         // Logic to start the day phase
-        System.out.println("Day phase started!");
+        System.out.println("Day phase started");
+
+        // Notify players about the start of the day phase
+        contactAllPlayers("DAY_PHASE");
+        // Distribute the story to all players
+        contactAllPlayers("STORY:" + story);
+
+        // Give the players time to discuss
+        contactAllPlayers("DISCUSSION_STARTED");
+
+        try {
+            Thread.sleep(30000); // 30 seconds for discussion
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // After discussion, ask players to vote
+        contactAllPlayers("VOTE_STARTED");
+
+        // Wait to recieve all votes
+        // Sum them up
+        // Kick the player with the most votes
+        // Display the results
+        System.out.println("Day phase ended");
+    }
+
+    public void endGame() throws IOException {
+        // Logic to end the game
+        System.out.println("Game ended");
+        gameOver = true;
+        stop();
+    }
+
+    public void contactAllPlayers(String message) {
+        // Send a message to all players
+        for (String player : players.keySet()) {
+            String ip = players.get(player);
+            try {
+                sendRequest(ip, message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Message sent to all players: " + message);
     }
 
     // Networkng to send data to other players
@@ -97,23 +224,111 @@ public class Game {
                 String senderIP = packet.getAddress().getHostAddress();
                 System.out.println("Received request: '" + request + "' from '" + senderIP + "'");
 
-                // This is where you handle the requests
+                // requests for room management
                 if(request.equals("DISCOVER_ROOM")) {
-                    sendRequest(senderIP, "ROOM_IS_OPEN");
+                    if(roomOpen == true){
+                        sendRequest(senderIP, "ROOM_OPEN");
+                    } else{
+                        sendRequest(senderIP, "ROOM_CLOSED");
+                    }
                     roomInfo = senderIP + ":" + request;
                 }
-                if(request.equals("ROOM_IS_OPEN")) {
+                if(request.equals("ROOM_OPEN")) {
                     sendRequest(senderIP, "JOIN_ROOM:" + Driver.getPlayerName());
+                }
+                if(request.equals("ROOM_CLOSED")) {
+                    roomInfo = "Room is Closed";
                 }
                 if(request.startsWith("JOIN_ROOM:")) {
                     String playerName = request.substring(10);
                     addPlayer(playerName, senderIP);
-                    sendRequest(senderIP, getPlayers());
+                    sendRequest(senderIP, "PLAYERS:" + getPlayersAndIPs());
                     System.out.println("Player " + playerName + " joined the room.");
+                }
+                if(request.startsWith("PLAYERS:")) {
+                    String playersList = request.substring(8);
+                    JoinRoom.clearPlayerList();
+                    for (String player : playersList.split("\n")) {
+                        String name = player.split(":")[0];
+                        String ip = player.split(":")[1];
+                        addPlayer(name, ip);
+                    }
+                }
+                if(request.equals("PLAYER_LEFT")) {
+                    String playerName = players.get(senderIP);
+                    players.remove(playerName);
+                    try{
+                        roles.remove(playerName);
+                    } catch (Exception e) {
+                        System.out.println("No role assigned to player: " + playerName);
+                    }
+                    JoinRoom.removePlayerFromList(playerName);
+                    GamePanel.updatePlayers();
+                    System.out.println("Player " + playerName + " left the room.");
+                }
+                
+                // requests for game logic
+                if(request.equals("START_GAME")) {
+                    // Do Something
+                }
+                if (request.startsWith("ROLE:")) {
+                    String role = request.substring(5);
+                    Driver.setRole(role);
+                    System.out.println("Assigned role: " + role + " to player: " + Driver.getPlayerName());
+                }
+                if(request.startsWith("CHAT:")) {
+                    String chatMessage = request.substring(5);
+                    GamePanel.chatListModel.addElement(chatMessage);
+                    // Scroll to the bottom of the chat list
+                    GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
+                }
+                if (request.equals("NIGHT_PHASE")) {
+                    // Do Something
+                }
+                if (request.equals("DAY_PHASE")) {
+                    // Do Something
+                }
+                if (request.startsWith("STORY:")) {
+                    String storyRecieved = request.substring(6);
+                    System.out.println(storyRecieved);
+                }
+                if (request.equals("CHOOSE_VICTIM")) {
+                    // Do Something
+                }
+                if (request.equals("CHOOSE_SAVE")) {
+                    // Do Something
+                }
+                if (request.startsWith("VICTIM:")) {
+                    victim = request.substring(7);
+                    System.out.println("Victim chosen: " + victim);
+                }
+                if (request.startsWith("SAVE:")) {
+                    savedPlayer = request.substring(5);
+                    System.out.println("Saved player chosen: " + savedPlayer);
+                }
+                if (request.equals("DISCUSSION_STARTED")) {
+                    // Do Something
+                }
+                if (request.equals("VOTE_STARTED")) {
+                    // Do Something
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public String leaveRoom(){
+        if (roomOpen) {
+            roomOpen = false;
+            roomInfo = "Not in a room";
+            players.clear();
+            roles.clear();
+            JoinRoom.clearPlayerList();
+            contactAllPlayers("PLAYER_LEFT");
+            return "You have left the room.";
+        } else {
+            return "You are not in a room.";
         }
     }
 
