@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -31,7 +32,11 @@ public class SettingPanel extends JPanel {
         // Create a top panel for the back button
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.setBackground(Color.BLACK);
-        backButton = new JButton("Back");
+        
+        backButton = new JButton();
+        ImageIcon backIcon = new ImageIcon("Graphics/back1.png");
+        backButton.setIcon(backIcon);
+        backButton.setBackground(Color.black);
 
         // Add back button to the top panel
         topPanel.add(backButton);
@@ -45,8 +50,14 @@ public class SettingPanel extends JPanel {
         JPanel leftPanel = new JPanel();
         leftPanel.setBackground(Color.BLACK);
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        nameButton = new JButton("Change Name");
-        generateButton = new JButton("Generate Scenario");
+        nameButton = new JButton();
+        ImageIcon icon = new ImageIcon("Graphics/changename2.png");
+        nameButton.setIcon(icon);
+        nameButton.setBackground(Color.black);
+        generateButton = new JButton();
+        ImageIcon Icon2 = new ImageIcon("Graphics/senario.png");
+        generateButton.setIcon(Icon2);
+        generateButton.setBackground(Color.black);
         TitledBorder border = BorderFactory.createTitledBorder("Settings");
         border.setTitleColor(Color.WHITE);
         leftPanel.setBorder(border);

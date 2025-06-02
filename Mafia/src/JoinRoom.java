@@ -9,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -46,7 +47,11 @@ public class JoinRoom extends JPanel {
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(java.awt.Color.BLACK);
 
-        backButton = new JButton("Back");
+        backButton = new JButton();
+        ImageIcon backIcon = new ImageIcon("Graphics/back1.png");
+        backButton.setIcon(backIcon);
+        backButton.setBackground(Color.black);
+        backButton.setBorder(null);
         topPanel.add(backButton, BorderLayout.WEST);
 
         ipLabel = new JLabel("Your IP: " + Driver.getYourIp(), SwingConstants.CENTER);
@@ -80,7 +85,11 @@ public class JoinRoom extends JPanel {
         leftPanel.add(ipAdField);
         leftPanel.add(new JScrollPane(roomList), BorderLayout.CENTER);
 
-        refreshButton = new JButton("Connect");
+        refreshButton = new JButton();
+        ImageIcon refreshIcon = new ImageIcon("Graphics/connect.png");
+        refreshButton.setIcon(refreshIcon);
+        refreshButton.setBackground(Color.black);
+        refreshButton.setBorder(null);
         leftPanel.add(refreshButton, BorderLayout.SOUTH);
 
         centerPanel.add(leftPanel);
@@ -94,7 +103,11 @@ public class JoinRoom extends JPanel {
         rightPanel.setBorder(border);
 
         // Room creation fields
-        createRoomButton = new JButton("Go Online");
+        createRoomButton = new JButton();
+        ImageIcon createRoomIcon = new ImageIcon("Graphics/online.png");
+        createRoomButton.setIcon(createRoomIcon);
+        createRoomButton.setBackground(Color.black);
+        createRoomButton.setBorder(null);
 
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(createRoomButton);
@@ -111,7 +124,11 @@ public class JoinRoom extends JPanel {
         rightPanel.add(playersInRoom);
         rightPanel.add(playerScrollPane);
 
-        startGameButton = new JButton("Start Game");
+        startGameButton = new JButton();
+        ImageIcon startGameIcon = new ImageIcon("Graphics/startGame.png");
+        startGameButton.setIcon(startGameIcon);
+        startGameButton.setBackground(Color.black);
+        startGameButton.setBorder(null);
 
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(startGameButton);
