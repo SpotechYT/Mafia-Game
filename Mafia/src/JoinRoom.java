@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.IOException;
-import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -26,12 +25,12 @@ public class JoinRoom extends JPanel {
     public DefaultListModel<String> roomListModel;
     public JList<String> roomList;
     public JButton refreshButton;
-    public JButton leaveRoomButton;
 
     public JTextField roomNameField;
     public JTextField ipAdField;
     public JButton createRoomButton;
     public JButton startGameButton;
+    public JButton kickButton;
     public JPanel rightPanel;
     public JScrollPane playerScrollPane;
 
@@ -100,10 +99,12 @@ public class JoinRoom extends JPanel {
         rightPanel.add(playerScrollPane);
 
         startGameButton = new JButton("Start Game");
-        leaveRoomButton = new JButton("Leave Room");
+        kickButton = new JButton("Kick Player");
+
 
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(startGameButton);
+        rightPanel.add(kickButton);
         rightPanel.add(Box.createVerticalStrut(20));
 
         rightPanel.add(Box.createVerticalGlue());
@@ -113,7 +114,6 @@ public class JoinRoom extends JPanel {
         refreshButton.addActionListener(e -> {
             // This is your function body
             onRefreshRooms();
-            joinRoom();
         });
 
         createRoomButton.addActionListener(e -> {
@@ -124,6 +124,16 @@ public class JoinRoom extends JPanel {
         backButton.addActionListener(e -> {
             // This is your function body
             game.leaveRoom();
+        });
+
+        kickButton.addActionListener(e -> {
+            // This is your function body
+            String selectedPlayer = playerList.getSelectedValue();
+            if (selectedPlayer != null) {
+                game.contactAllPlayers("KICK:" + selectedPlayer);
+            } else {
+                JOptionPane.showMessageDialog(this, "No player selected to kick.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         add(centerPanel, BorderLayout.CENTER);
@@ -191,59 +201,50 @@ public class JoinRoom extends JPanel {
         }
     }
 
-    public void onLeaveRoom() {
-        // Logic to leave the room
-        game.contactAllPlayers("LEAVE:" + Driver.getPlayerName());
-        game.removePlayer(Driver.getPlayerName());
-        rightReset();
-        rightPanel.revalidate();
-        rightPanel.repaint();
-    }
+    // public void joinRoom(){
+    //     clearPlayerList();
+    //     rightReset();
+    //     HashMap<String, String> players = game.getPlayersMap();
+    //     //int i = 1;
+    //     for (String playerName : players.keySet()) {
+    //         addPlayerToList(playerName + ":" + players.get(playerName));
+    //     }
+    //     playerList.addMouseListener(new java.awt.event.MouseAdapter() {
+    //         @Override
+    //         public void mouseClicked(java.awt.event.MouseEvent e) {
+    //             int index = playerList.locationToIndex(e.getPoint());
+    //             if (index != -1) {
+    //                 rightReset();
+    //                 String playerName = playerList.getModel().getElementAt(index).split(":")[0];
+    //                 System.out.println("Clicked player: " + playerName);
 
-    public void joinRoom(){
-        clearPlayerList();
-        rightReset();
-        HashMap<String, String> players = game.getPlayersMap();
-        //int i = 1;
-        for (String playerName : players.keySet()) {
-            addPlayerToList(playerName + ":" + players.get(playerName));
-        }
-        playerList.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                int index = playerList.locationToIndex(e.getPoint());
-                if (index != -1) {
-                    rightReset();
-                    String playerName = playerList.getModel().getElementAt(index).split(":")[0];
-                    System.out.println("Clicked player: " + playerName);
-
-                    JButton kickButton = new JButton("Kick " + playerName);
-                    kickButton.setPreferredSize(new Dimension(100, 50));
-                    kickButton.addActionListener(ev -> {
-                        game.removePlayer(playerName);
-                        try {
-                            game.sendRequest(players.get(playerName), "KICK:" + playerName);
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                        clearPlayerList();
-                        for (String name : game.getPlayersMap().keySet()) {
-                            addPlayerToList(name + ":" + game.getPlayersMap().get(name));
-                        }
-                        rightPanel.remove(kickButton);
-                        rightReset();
-                    });
-                    rightPanel.add(leaveRoomButton);
-                    rightPanel.add(kickButton);
-                    rightPanel.revalidate();
-                    rightPanel.repaint();
-                }
-            }
-        });
-        rightPanel.add(leaveRoomButton);
-        rightPanel.revalidate();
-        rightPanel.repaint();
-    }
+    //                 JButton kickButton = new JButton("Kick " + playerName);
+    //                 kickButton.setPreferredSize(new Dimension(100, 50));
+    //                 kickButton.addActionListener(ev -> {
+    //                     game.removePlayer(playerName);
+    //                     try {
+    //                         game.sendRequest(players.get(playerName), "KICK:" + playerName);
+    //                     } catch (IOException ex) {
+    //                         ex.printStackTrace();
+    //                     }
+    //                     clearPlayerList();
+    //                     for (String name : game.getPlayersMap().keySet()) {
+    //                         addPlayerToList(name + ":" + game.getPlayersMap().get(name));
+    //                     }
+    //                     rightPanel.remove(kickButton);
+    //                     rightReset();
+    //                 });
+    //                 rightPanel.add(leaveRoomButton);
+    //                 rightPanel.add(kickButton);
+    //                 rightPanel.revalidate();
+    //                 rightPanel.repaint();
+    //             }
+    //         }
+    //     });
+    //     rightPanel.add(leaveRoomButton);
+    //     rightPanel.revalidate();
+    //     rightPanel.repaint();
+    // }
 
     public void rightReset(){
         rightPanel.removeAll();

@@ -287,16 +287,17 @@ public class Game {
                     // Scroll to the bottom of the chat list
                     GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
                 }
-                if(request.startsWith("LEAVE:")) {
-                    String playerLeaving = request.substring(6);
-                    GamePanel.chatListModel.addElement(playerLeaving + " has left the game.");
-                    // Notify all players about the player leaving
-                    GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
-                }
                 if(request.startsWith("KICK:")) {
                     String playerToKick = request.substring(5);
-                    GamePanel.chatListModel.addElement(playerToKick + " has been kicked from the game.");
-                    GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
+                    players.remove(playerToKick);
+                    try{
+                        roles.remove(playerToKick);
+                    } catch (Exception e) {
+                        System.out.println("No role assigned to player: " + playerToKick);
+                    }
+                    JoinRoom.removePlayerFromList(playerToKick);
+                    GamePanel.updatePlayers();     
+                    System.out.println("Player " + playerToKick + " has been kicked from the room.");               
                 }
                 if (request.equals("NIGHT_PHASE")) {
                     // Do Something
