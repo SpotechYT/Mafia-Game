@@ -282,12 +282,6 @@ public class Game {
                     // Scroll to the bottom of the chat list
                     GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
                 }
-                if (request.startsWith("SERVER_MESSAGE:")) {
-                    String chatMessage = request.substring(15);
-                    GamePanel.chatListModel.addElement(chatMessage);
-                    // Scroll to the bottom of the chat list
-                    GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
-                }
                 if (request.equals("NIGHT_PHASE")) {
                     // Do Something
                 }

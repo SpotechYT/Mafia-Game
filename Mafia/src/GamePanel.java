@@ -108,7 +108,7 @@ public class GamePanel extends JPanel {
 
     public void sendServerMessage(String message) {
         // Send a chat message to all players
-        game.contactAllPlayers("SERVER_MESSAGE:" + message);
+        game.contactAllPlayers("CHAT:" + message);
     }
 
     public void leaveRoom() {
