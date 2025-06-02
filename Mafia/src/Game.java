@@ -281,6 +281,11 @@ public class Game {
                     // Notify all players about the player leaving
                     GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
                 }
+                if(request.startsWith("KICK:")) {
+                    String playerToKick = request.substring(5);
+                    GamePanel.chatListModel.addElement(playerToKick + " has been kicked from the game.");
+                    GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
+                }
                 if (request.equals("NIGHT_PHASE")) {
                     // Do Something
                 }

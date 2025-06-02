@@ -222,7 +222,7 @@ public class JoinRoom extends JPanel {
                     kickButton.addActionListener(ev -> {
                         game.removePlayer(playerName);
                         try {
-                            game.sendRequest(players.get(playerName), "KICK_PLAYER:" + playerName);
+                            game.sendRequest(players.get(playerName), "KICK:" + playerName);
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }

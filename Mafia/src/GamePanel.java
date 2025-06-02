@@ -77,6 +77,7 @@ public class GamePanel extends JPanel {
             // This is your function body
             Driver.getGame().contactAllPlayers("LEAVE:" + Driver.getPlayerName());
             Driver.getGame().removePlayer(Driver.getPlayerName());
+            updatePlayers();
         });
 
         chatButton.addActionListener(e -> {
@@ -90,6 +91,7 @@ public class GamePanel extends JPanel {
             public void keyPressed(java.awt.event.KeyEvent e) {
                 if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
                     sendChatMessage(chatField.getText());
+                    chatField.setText(""); // Clear the chat field after sending
                 }
             }
         });
