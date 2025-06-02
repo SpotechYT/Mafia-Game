@@ -21,7 +21,8 @@ public class GamePanel extends JPanel {
     public JButton chatButton;
 
     public static JPanel rightPanel;
-    public static JButton leaveButton;
+
+    private Game game = Driver.getGame();
 
     public GamePanel() {
         // Set layout
@@ -73,16 +74,14 @@ public class GamePanel extends JPanel {
         // Add bottom panel to the bottom (SOUTH) of the main panel
         //add(bottomPanel, BorderLayout.SOUTH);
 
-        backButton.addActionListener(e -> {
-            // This is your function body
-            Driver.getGame().contactAllPlayers("LEAVE:" + Driver.getPlayerName());
-            Driver.getGame().removePlayer(Driver.getPlayerName());
-            updatePlayers();
-        });
-
         chatButton.addActionListener(e -> {
             // This is your function body
             sendChatMessage(chatField.getText());
+        });
+
+        backButton.addActionListener(e -> {
+            // This is your function body
+            leaveRoom();
         });
 
         // Replace VK_YOUR_KEY with the desired key code, e.g., VK_A for 'A' key
@@ -113,6 +112,16 @@ public class GamePanel extends JPanel {
 
     public void sendChatMessage(String message) {
         // Send a chat message to all players
-        Driver.getGame().contactAllPlayers("CHAT:" + Driver.getPlayerName() + ": " + message);
+        game.contactAllPlayers("CHAT:" + Driver.getPlayerName() + ": " + message);
+    }
+
+    public void sendServerMessage(String message) {
+        // Send a chat message to all players
+        game.contactAllPlayers("CHAT:" + message);
+    }
+
+    public void leaveRoom() {
+        game.leaveRoom();
+        sendServerMessage(Driver.getPlayerName() + " has left the room.");
     }
 }

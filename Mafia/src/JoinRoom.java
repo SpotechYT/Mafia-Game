@@ -121,11 +121,11 @@ public class JoinRoom extends JPanel {
             onCreateRoom();
         });
 
-        leaveRoomButton.addActionListener(e -> {
-            // Logic to leave the room
-            onLeaveRoom();
+        backButton.addActionListener(e -> {
+            // This is your function body
+            game.leaveRoom();
         });
-        
+
         add(centerPanel, BorderLayout.CENTER);
     }
 
