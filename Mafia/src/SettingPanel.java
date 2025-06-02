@@ -1,5 +1,19 @@
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingWorker;
+import javax.swing.border.TitledBorder;
 
 public class SettingPanel extends JPanel {
 
@@ -12,8 +26,11 @@ public class SettingPanel extends JPanel {
     public SettingPanel() throws Exception {
         // Set layout
         setLayout(new BorderLayout());
+        setBackground(Color.BLACK);
+
         // Create a top panel for the back button
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.setBackground(Color.BLACK);
         backButton = new JButton("Back");
 
         // Add back button to the top panel
@@ -23,20 +40,27 @@ public class SettingPanel extends JPanel {
         add(topPanel, BorderLayout.NORTH);
         // You can add game content to other parts of the panel later
         centerPanel = new JPanel(new GridLayout(1, 2));
+        centerPanel.setBackground(Color.BLACK);
 
         JPanel leftPanel = new JPanel();
+        leftPanel.setBackground(Color.BLACK);
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         nameButton = new JButton("Change Name");
         generateButton = new JButton("Generate Scenario");
-        leftPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
+        TitledBorder border = BorderFactory.createTitledBorder("Settings");
+        border.setTitleColor(Color.WHITE);
+        leftPanel.setBorder(border);
         leftPanel.add(new JScrollPane(nameButton));
         leftPanel.add(new JScrollPane(generateButton));
 
         centerPanel.add(leftPanel);
 
         rightPanel = new JPanel();
+        rightPanel.setBackground(Color.BLACK);
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.add(new JLabel("Click on a setting"), BorderLayout.NORTH);
+        JLabel label = new JLabel("Click on a setting");
+        label.setForeground(Color.WHITE);
+        rightPanel.add(label, BorderLayout.NORTH);
         centerPanel.add(rightPanel);
 
         add(centerPanel, BorderLayout.CENTER);
