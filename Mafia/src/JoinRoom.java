@@ -109,7 +109,11 @@ public class JoinRoom extends JPanel {
         rightPanel.add(new JLabel("Players in Room:"));
         rightPanel.add(playerScrollPane);
 
-        startGameButton = new JButton("Start Game");
+        startGameButton = new JButton();
+        ImageIcon startGameIcon = new ImageIcon("Graphics/startGame.png");
+        startGameButton.setIcon(startGameIcon);
+        startGameButton.setBackground(Color.black);
+        startGameButton.setBorder(null);
 
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(startGameButton);

@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -10,6 +11,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ImageIcon;
+
 
 public class GamePanel extends JPanel {
 
@@ -30,7 +33,11 @@ public class GamePanel extends JPanel {
 
         // Create a top panel for the back button
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        backButton = new JButton("Quit Game");
+        backButton = new JButton();
+        ImageIcon back = new ImageIcon("Graphics/back1.png");
+        backButton.setIcon(back);
+        backButton.setBackground(Color.black);
+
 
         // Add back button to the top panel
         topPanel.add(backButton);
@@ -51,7 +58,10 @@ public class GamePanel extends JPanel {
         leftPanel.add(chatField);
         leftPanel.add(new JScrollPane(chatList), BorderLayout.CENTER);
 
-        chatButton = new JButton("sendChat");
+        chatButton = new JButton();
+        ImageIcon chatIcon = new ImageIcon("Graphics/send.png");
+        chatButton.setIcon(chatIcon);
+        chatButton.setBackground(Color.black);
         leftPanel.add(chatButton, BorderLayout.SOUTH);
 
         mainPanel.add(leftPanel);
