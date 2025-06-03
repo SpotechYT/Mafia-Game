@@ -23,12 +23,14 @@ public class GamePanel extends JPanel {
     public static DefaultListModel<String> chatListModel;
     public static JList<String> chatList;
     public JButton chatButton;
+    public static JButton kickButton;
+    public static String prevMode;
+
 
     public static JLabel gameText;
     public static JLabel roleText;
 
     public static JPanel rightPanel;
-    private boolean kickMode = false;
 
     private static Game game = Driver.getGame();
 
@@ -78,7 +80,7 @@ public class GamePanel extends JPanel {
         chatButton.setBackground(Color.black);
         leftPanel.add(chatButton, BorderLayout.SOUTH);
         mainPanel.add(leftPanel);
-        // kickButton = new JButton("Kick Player");
+        kickButton = new JButton("Kick Player");
         rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
         roleText = new JLabel("No Role Assigned");
         roleText.setForeground(Color.WHITE);
@@ -115,14 +117,18 @@ public class GamePanel extends JPanel {
             // This is your function body
             leaveRoom();
         });
-        // kickButton.addActionListener(e -> {
-        //     if(game.getPlayersMap().size() < 2) {
-        //         sendServerMessage("Not enough players to kick anyone.");
-        //     }else{
-        //         kickMode = true;
-        //         kickButton.setText("Select Player to Kick");
-        //     }
-        // });
+        kickButton.addActionListener(e -> {
+            prevMode = game.getCurrentMode();
+            kickButton.setText("Select Player to Kick");
+            game.setCurrentMode("KICK");
+            // if(game.getPlayersMap().size() < 2) {
+            //     sendServerMessage("Not enough players to kick anyone.");
+            // }else{
+            //     prevMode = game.getCurrentMode();
+            //     kickButton.setText("Select Player to Kick");
+            //     game.setCurrentMode("KICK");
+            // }
+        });
 
         // Replace VK_YOUR_KEY with the desired key code, e.g., VK_A for 'A' key
         chatField.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -162,6 +168,8 @@ public class GamePanel extends JPanel {
                     case "KICK":
                         // If in kicking mode, send a kick request for the player
                         game.contactAllPlayers("KICK:" + player);
+                        kickButton.setText("Kick Player");
+                        game.setCurrentMode(prevMode); // Reset to previous mode after kick
                         break;
                     case "CHOOSE_SAVE":
                         // If in choose save mode, send a save request for the player
@@ -179,6 +187,7 @@ public class GamePanel extends JPanel {
 
             rightPanel.add(playerButton);
         }
+        rightPanel.add(kickButton);
 
         // Refresh the panel after adding components
         rightPanel.revalidate();
