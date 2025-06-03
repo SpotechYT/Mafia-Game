@@ -33,6 +33,9 @@ public class JoinRoom extends JPanel {
     public JTextField ipAdField;
     public JButton createRoomButton;
     public JButton startGameButton;
+    public JButton kickButton;
+    public JPanel rightPanel;
+    public JScrollPane playerScrollPane;
 
     public static DefaultListModel<String> playerListModel;
     public JList<String> playerList;
@@ -95,7 +98,7 @@ public class JoinRoom extends JPanel {
         centerPanel.add(leftPanel);
 
         // RIGHT: Host Room Form + Player List
-        JPanel rightPanel = new JPanel();
+        rightPanel = new JPanel();
         rightPanel.setBackground(java.awt.Color.BLACK);
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         border = BorderFactory.createTitledBorder("Room Status");
@@ -116,7 +119,7 @@ public class JoinRoom extends JPanel {
         // Player List
         playerListModel = new DefaultListModel<>();
         playerList = new JList<>(playerListModel);
-        JScrollPane playerScrollPane = new JScrollPane(playerList);
+        playerScrollPane = new JScrollPane(playerList);
         playerScrollPane.setPreferredSize(new Dimension(200, 150));
 
         JLabel playersInRoom = new JLabel("Players in Room:");
@@ -129,9 +132,15 @@ public class JoinRoom extends JPanel {
         startGameButton.setIcon(startGameIcon);
         startGameButton.setBackground(Color.black);
         startGameButton.setBorder(null);
+        kickButton = new JButton();
+        ImageIcon kickIcon = new ImageIcon("Graphics/kick.png");
+        kickButton.setIcon(kickIcon);
+        kickButton.setBackground(Color.black);
+
 
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(startGameButton);
+        rightPanel.add(kickButton);
         rightPanel.add(Box.createVerticalStrut(20));
 
         rightPanel.add(Box.createVerticalGlue());
@@ -151,6 +160,16 @@ public class JoinRoom extends JPanel {
         backButton.addActionListener(e -> {
             // This is your function body
             game.leaveRoom();
+        });
+
+        kickButton.addActionListener(e -> {
+            // This is your function body
+            String selectedPlayer = playerList.getSelectedValue();
+            if (selectedPlayer != null) {
+                game.contactAllPlayers("KICK:" + selectedPlayer);
+            } else {
+                JOptionPane.showMessageDialog(this, "No player selected to kick.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         add(centerPanel, BorderLayout.CENTER);
@@ -216,5 +235,23 @@ public class JoinRoom extends JPanel {
             ex.printStackTrace(); // Log the error
             JOptionPane.showMessageDialog(this, "Failed to create room.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void rightReset(){
+        rightPanel.removeAll();
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightPanel.setBorder(BorderFactory.createTitledBorder("Host a Room"));
+        rightPanel.add(Box.createVerticalStrut(10));
+        rightPanel.add(createRoomButton);
+        rightPanel.add(Box.createVerticalStrut(20));
+        playerScrollPane.setPreferredSize(new Dimension(200, 150));
+        rightPanel.add(new JLabel("Players in Room:"));
+        rightPanel.add(playerScrollPane);
+        rightPanel.add(Box.createVerticalStrut(10));
+        rightPanel.add(startGameButton);
+        rightPanel.add(Box.createVerticalStrut(20));
+        rightPanel.add(Box.createVerticalGlue());
+
+        
     }
 }
