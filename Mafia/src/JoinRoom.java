@@ -132,7 +132,11 @@ public class JoinRoom extends JPanel {
         startGameButton.setIcon(startGameIcon);
         startGameButton.setBackground(Color.black);
         startGameButton.setBorder(null);
-        kickButton = new JButton("Kick Player");
+        kickButton = new JButton();
+        ImageIcon kickIcon = new ImageIcon("Graphics/kick.png");
+        kickButton.setIcon(kickIcon);
+        kickButton.setBackground(Color.black);
+        kickButton.setBorder(null);
 
 
         rightPanel.add(Box.createVerticalStrut(10));
