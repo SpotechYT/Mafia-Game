@@ -16,6 +16,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
@@ -34,7 +35,7 @@ public class JoinRoom extends JPanel {
     public JTextField ipAdField;
     public JButton createRoomButton;
     public JButton startGameButton;
-    public JButton kickButton;
+    // public JButton kickButton;
     public JPanel rightPanel;
     public JScrollPane playerScrollPane;
 
@@ -137,12 +138,12 @@ public class JoinRoom extends JPanel {
         startGameButton.setIcon(startGameIcon);
         startGameButton.setBackground(Color.black);
         startGameButton.setBorder(null);
-        kickButton = new JButton("Kick Player");
+        // kickButton = new JButton("Kick Player");
 
 
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(startGameButton);
-        rightPanel.add(kickButton);
+        // rightPanel.add(kickButton);
         rightPanel.add(Box.createVerticalStrut(20));
 
         rightPanel.add(Box.createVerticalGlue());
@@ -164,15 +165,15 @@ public class JoinRoom extends JPanel {
             game.leaveRoom();
         });
 
-        kickButton.addActionListener(e -> {
-            // This is your function body
-            String selectedPlayer = playerList.getSelectedValue();
-            if (selectedPlayer != null) {
-                game.contactAllPlayers("KICK:" + selectedPlayer);
-            } else {
-                JOptionPane.showMessageDialog(this, "No player selected to kick.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        // kickButton.addActionListener(e -> {
+        //     // This is your function body
+        //     String selectedPlayer = playerList.getSelectedValue();
+        //     if (selectedPlayer != null) {
+        //         game.contactAllPlayers("KICK:" + selectedPlayer);
+        //     } else {
+        //         JOptionPane.showMessageDialog(this, "No player selected to kick.", "Error", JOptionPane.ERROR_MESSAGE);
+        //     }
+        // });
 
         add(centerPanel, BorderLayout.CENTER);
     }
@@ -269,5 +270,10 @@ public class JoinRoom extends JPanel {
         list.setBackground(Color.GRAY);
         list.setForeground(Color.WHITE);
         list.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+    }
+    public static void applyColor(JTextArea textArea) {
+        textArea.setBackground(Color.GRAY);
+        textArea.setForeground(Color.WHITE);
+        textArea.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
     }
 }

@@ -287,18 +287,18 @@ public class Game {
                     // Scroll to the bottom of the chat list
                     GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
                 }
-                if(request.startsWith("KICK:")) {
-                    String playerToKick = request.substring(5);
-                    players.remove(playerToKick);
-                    try{
-                        roles.remove(playerToKick);
-                    } catch (Exception e) {
-                        System.out.println("No role assigned to player: " + playerToKick);
-                    }
-                    JoinRoom.removePlayerFromList(playerToKick);
-                    GamePanel.updatePlayers();     
-                    System.out.println("Player " + playerToKick + " has been kicked from the room.");               
-                }
+                // if(request.startsWith("KICK:")) {
+                //     String playerToKick = request.substring(5);
+                //     players.remove(playerToKick);
+                //     try{
+                //         roles.remove(playerToKick);
+                //     } catch (Exception e) {
+                //         System.out.println("No role assigned to player: " + playerToKick);
+                //     }
+                //     JoinRoom.removePlayerFromList(playerToKick);
+                //     GamePanel.updatePlayers();     
+                //     System.out.println("Player " + playerToKick + " has been kicked from the room.");               
+                // }
                 if (request.equals("NIGHT_PHASE")) {
                     // Do Something
                 }

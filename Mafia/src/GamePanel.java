@@ -12,7 +12,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 public class GamePanel extends JPanel {
@@ -23,7 +22,7 @@ public class GamePanel extends JPanel {
     public static DefaultListModel<String> chatListModel;
     public static JList<String> chatList;
     public JButton chatButton;
-    public static JButton kickButton;
+    // public static JButton kickButton;
 
     public static JPanel rightPanel;
     private boolean kickMode = false;
@@ -76,7 +75,7 @@ public class GamePanel extends JPanel {
         chatButton.setBackground(Color.black);
         leftPanel.add(chatButton, BorderLayout.SOUTH);
         mainPanel.add(leftPanel);
-        kickButton = new JButton("Kick Player");
+        // kickButton = new JButton("Kick Player");
         rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
         updatePlayers();
 
@@ -107,14 +106,14 @@ public class GamePanel extends JPanel {
             // This is your function body
             leaveRoom();
         });
-        kickButton.addActionListener(e -> {
-            if(game.getPlayersMap().size() < 2) {
-                sendServerMessage("Not enough players to kick anyone.");
-            }else{
-                kickMode = true;
-                kickButton.setText("Select Player to Kick");
-            }
-        });
+        // kickButton.addActionListener(e -> {
+        //     if(game.getPlayersMap().size() < 2) {
+        //         sendServerMessage("Not enough players to kick anyone.");
+        //     }else{
+        //         kickMode = true;
+        //         kickButton.setText("Select Player to Kick");
+        //     }
+        // });
 
         // Replace VK_YOUR_KEY with the desired key code, e.g., VK_A for 'A' key
         chatField.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -145,19 +144,19 @@ public class GamePanel extends JPanel {
             // Set the button to the player name
             playerButton.setText(player);
 
-            playerButton.addActionListener(ev -> {
-                GamePanel panel = (GamePanel)SwingUtilities.getAncestorOfClass(GamePanel.class, rightPanel);
-                    if (panel != null && panel.kickMode) {
-                        panel.kickMode = false;
-                        panel.kickButton.setText("Kick Player");
-                        panel.game.contactAllPlayers("KICK:" + player);
-                        panel.sendServerMessage(player + " has been kicked.");
-                        updatePlayers();
-                    }
-            });
+            // playerButton.addActionListener(ev -> {
+            //     GamePanel panel = (GamePanel)SwingUtilities.getAncestorOfClass(GamePanel.class, rightPanel);
+            //         if (panel != null && panel.kickMode) {
+            //             panel.kickMode = false;
+            //             panel.kickButton.setText("Kick Player");
+            //             panel.game.contactAllPlayers("KICK:" + player);
+            //             panel.sendServerMessage(player + " has been kicked.");
+            //             updatePlayers();
+            //         }
+            // });
             rightPanel.add(playerButton);
         }
-        rightPanel.add(kickButton);
+        // rightPanel.add(kickButton);
         rightPanel.revalidate(); // Refresh the panel to show the new buttons
         rightPanel.repaint(); // Repaint the panel to ensure the new buttons are displayed
 
