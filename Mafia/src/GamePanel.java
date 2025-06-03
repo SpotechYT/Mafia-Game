@@ -72,7 +72,10 @@ public class GamePanel extends JPanel {
         chatButton.setBackground(Color.black);
         leftPanel.add(chatButton, BorderLayout.SOUTH);
         mainPanel.add(leftPanel);
-        kickButton = new JButton("Kick Player");
+        kickButton = new JButton();
+        ImageIcon kickIcon = new ImageIcon("Graphics/kick.png");
+        kickButton.setIcon(kickIcon);
+        kickButton.setBackground(Color.black);
         rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
         updatePlayers();
 
