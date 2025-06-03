@@ -62,10 +62,15 @@ public class Game {
 
         // Initialize game logic here
         System.out.println("Game started!");
+        Driver.showGamePanel();
         contactAllPlayers("GAME_STARTED");
 
+        new Thread(this::gameLogic).start();
+    }
+
+    private void gameLogic(){
         assignRoles();
-        while(!gameOver) {
+        while (!gameOver) {
             // Game loop
             try {
                 startNightPhase();
@@ -73,7 +78,7 @@ public class Game {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            //gameOver = true;
+            gameOver = true;
         }
     }
 
@@ -107,6 +112,7 @@ public class Game {
             String role = roles.get(player);
             String ip = players.get(player);
             try {
+                System.out.println("Distributing role " + role + " to player " + player + " at IP " + ip);
                 sendRequest(ip, "ROLE:" + role);
             } catch (IOException e) {
                 e.printStackTrace();

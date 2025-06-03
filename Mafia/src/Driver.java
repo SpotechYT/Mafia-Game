@@ -19,6 +19,8 @@ public class Driver {
     private static String role;
     private static Game game;
 
+    private static JFrame frame;
+
     public static void main(String[] args) throws Exception {
         game = new Game();
         
@@ -69,7 +71,7 @@ public class Driver {
 
     public static void Jframes() throws Exception {
         // Create the frame
-        JFrame frame = new JFrame("Mafia");
+        frame = new JFrame("Mafia");
         frame.setSize(1280, 720);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
@@ -108,7 +110,6 @@ public class Driver {
 
         joinRoom.startGameButton.addActionListener(e -> {
             game.startGame();
-            showGamePanel();
         });
 
         // Set the content pane
@@ -121,6 +122,10 @@ public class Driver {
     }
 
     public static void showGamePanel() {
+        System.out.println("Switching to GamePanel");
         cardLayout.show(mainPanel, "GamePanel");
+
+        frame.setContentPane(mainPanel);
+        frame.setVisible(true);
     }
 }
