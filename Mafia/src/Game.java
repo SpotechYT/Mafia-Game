@@ -310,6 +310,9 @@ public class Game {
                     } catch (Exception e) {
                         System.out.println("No role assigned to player: " + playerToKick);
                     }
+                    if(Driver.getPlayerName().equals(playerToKick)) {
+                        leaveRoom();
+                    }   
                     JoinRoom.removePlayerFromList(playerToKick);
                     GamePanel.updatePlayers();     
                     System.out.println("Player " + playerToKick + " has been kicked from the room.");               
