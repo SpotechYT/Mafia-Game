@@ -234,51 +234,6 @@ public class JoinRoom extends JPanel {
         }
     }
 
-    // public void joinRoom(){
-    //     clearPlayerList();
-    //     rightReset();
-    //     HashMap<String, String> players = game.getPlayersMap();
-    //     //int i = 1;
-    //     for (String playerName : players.keySet()) {
-    //         addPlayerToList(playerName + ":" + players.get(playerName));
-    //     }
-    //     playerList.addMouseListener(new java.awt.event.MouseAdapter() {
-    //         @Override
-    //         public void mouseClicked(java.awt.event.MouseEvent e) {
-    //             int index = playerList.locationToIndex(e.getPoint());
-    //             if (index != -1) {
-    //                 rightReset();
-    //                 String playerName = playerList.getModel().getElementAt(index).split(":")[0];
-    //                 System.out.println("Clicked player: " + playerName);
-
-    //                 JButton kickButton = new JButton("Kick " + playerName);
-    //                 kickButton.setPreferredSize(new Dimension(100, 50));
-    //                 kickButton.addActionListener(ev -> {
-    //                     game.removePlayer(playerName);
-    //                     try {
-    //                         game.sendRequest(players.get(playerName), "KICK:" + playerName);
-    //                     } catch (IOException ex) {
-    //                         ex.printStackTrace();
-    //                     }
-    //                     clearPlayerList();
-    //                     for (String name : game.getPlayersMap().keySet()) {
-    //                         addPlayerToList(name + ":" + game.getPlayersMap().get(name));
-    //                     }
-    //                     rightPanel.remove(kickButton);
-    //                     rightReset();
-    //                 });
-    //                 rightPanel.add(leaveRoomButton);
-    //                 rightPanel.add(kickButton);
-    //                 rightPanel.revalidate();
-    //                 rightPanel.repaint();
-    //             }
-    //         }
-    //     });
-    //     rightPanel.add(leaveRoomButton);
-    //     rightPanel.revalidate();
-    //     rightPanel.repaint();
-    // }
-
     public void rightReset(){
         rightPanel.removeAll();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
