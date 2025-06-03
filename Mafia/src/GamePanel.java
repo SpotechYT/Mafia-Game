@@ -77,7 +77,7 @@ public class GamePanel extends JPanel {
 
         rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
         roleText = new JLabel("No Role Assigned");
-        rightPanel.add(gameText);
+        rightPanel.add(roleText);
         gameText = new JLabel("Waiting for other players to join...");
         rightPanel.add(gameText);
         updatePlayers();
