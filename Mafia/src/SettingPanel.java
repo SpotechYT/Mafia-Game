@@ -152,7 +152,9 @@ public class SettingPanel extends JPanel {
 
     public void resetSettings(){
         rightPanel.removeAll();
-        rightPanel.add(new JLabel("Click on a setting"), BorderLayout.NORTH);
+        JLabel label = new JLabel("Click on a setting");
+        label.setForeground(Color.WHITE);
+        rightPanel.add(label, BorderLayout.NORTH);
         rightPanel.revalidate();
         rightPanel.repaint();
     }
