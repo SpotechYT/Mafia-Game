@@ -79,8 +79,10 @@ public class GamePanel extends JPanel {
         chatButton.setIcon(chatIcon);
         chatButton.setBackground(Color.black);
         leftPanel.add(chatButton, BorderLayout.SOUTH);
+
         mainPanel.add(leftPanel);
         kickButton = new JButton("Kick Player");
+
         rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
         roleText = new JLabel("No Role Assigned");
         roleText.setForeground(Color.WHITE);
@@ -106,11 +108,11 @@ public class GamePanel extends JPanel {
         // Add bottom panel to the bottom (SOUTH) of the main panel
         //add(bottomPanel, BorderLayout.SOUTH);
 
+
         chatButton.addActionListener(e -> {
             // This is your function body
             sendChatMessage(chatField.getText());
             chatField.setText(""); // Clear the chat field after sending
-            updatePlayers();
         });
 
         backButton.addActionListener(e -> {
