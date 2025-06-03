@@ -63,8 +63,12 @@ public class GamePanel extends JPanel {
         chatField = new JTextField();
         chatField.setText("Type your message here...");
         chatField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        JoinRoom.applyColor(chatField);
+        JoinRoom.applyColor(chatList);
+        JScrollPane chatScrollPane = new JScrollPane(chatList);
+        JoinRoom.applyColor(chatScrollPane);
         leftPanel.add(chatField);
-        leftPanel.add(new JScrollPane(chatList), BorderLayout.CENTER);
+        leftPanel.add(chatScrollPane, BorderLayout.CENTER);
 
         chatButton = new JButton();
         ImageIcon chatIcon = new ImageIcon("Graphics/send.png");
