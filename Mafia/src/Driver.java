@@ -1,5 +1,8 @@
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -15,6 +18,8 @@ public class Driver {
     private static String playerName = "Player" + (int) (Math.random() * 1000);
     private static String role;
     private static Game game;
+
+    private static JFrame frame;
 
     public static void main(String[] args) throws Exception {
         game = new Game();
@@ -66,9 +71,23 @@ public class Driver {
 
     public static void Jframes() throws Exception {
         // Create the frame
-        JFrame frame = new JFrame("Mafia");
+        frame = new JFrame("Mafia");
         frame.setSize(1280, 720);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    game.stop();
+                    frame.dispose();
+                    System.exit(0);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    frame.dispose();
+                    System.exit(0);
+                }
+            }
+        });
         frame.setLocationRelativeTo(null);
 
         // Create instances of panels
@@ -87,8 +106,11 @@ public class Driver {
         linkButton(mainMenu.settingsButton, "SettingPanel");
         linkButton(joinRoom.backButton, "MainMenu");
         linkButton(joinRoom.startGameButton, "GamePanel");
-        linkButton(gamePanel.backButton, "MainMenu");
         linkButton(settingPanel.backButton, "MainMenu");
+
+        joinRoom.startGameButton.addActionListener(e -> {
+            game.startGame();
+        });
 
         // Set the content pane
         frame.setContentPane(mainPanel);
@@ -97,8 +119,13 @@ public class Driver {
 
     public static void linkButton(JButton button, String panelName) {
         button.addActionListener(e -> cardLayout.show(mainPanel, panelName));
-
-        //testteset
     }
 
+    public static void showGamePanel() {
+        System.out.println("Switching to GamePanel");
+        cardLayout.show(mainPanel, "GamePanel");
+
+        frame.setContentPane(mainPanel);
+        frame.setVisible(true);
+    }
 }
