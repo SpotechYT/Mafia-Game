@@ -24,6 +24,8 @@ public class GamePanel extends JPanel {
     public static JList<String> chatList;
     public JButton chatButton;
     public static JButton kickButton;
+    public static ImageIcon kickIcon;
+    public static ImageIcon kickIcon2;
     public static String prevMode;
 
 
@@ -81,7 +83,13 @@ public class GamePanel extends JPanel {
         leftPanel.add(chatButton, BorderLayout.SOUTH);
 
         mainPanel.add(leftPanel);
-        kickButton = new JButton("Kick Player");
+        kickButton = new JButton();
+        kickIcon = new ImageIcon("Graphics/kick.png");
+        kickIcon2 = new ImageIcon("Graphics/selectPlayer.png");
+        kickButton.setIcon(kickIcon);
+        kickButton.setBorder(null);
+        kickButton.setBackground(Color.black);
+
 
         rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
         roleText = new JLabel("No Role Assigned");
@@ -121,7 +129,7 @@ public class GamePanel extends JPanel {
         });
         kickButton.addActionListener(e -> {
             prevMode = game.getCurrentMode();
-            kickButton.setText("Select Player to Kick");
+            kickButton.setIcon(kickIcon2);
             game.setCurrentMode("KICK");
             // if(game.getPlayersMap().size() < 2) {
             //     sendServerMessage("Not enough players to kick anyone.");
@@ -170,7 +178,7 @@ public class GamePanel extends JPanel {
                     case "KICK":
                         // If in kicking mode, send a kick request for the player
                         game.contactAllPlayers("KICK:" + player);
-                        kickButton.setText("Kick Player");
+                        kickButton.setIcon(kickIcon); // Reset the kick button icon
                         game.setCurrentMode(prevMode); // Reset to previous mode after kick
                         break;
                     case "CHOOSE_SAVE":
