@@ -9,13 +9,14 @@ public class Game {
     
     // Player, IP
     private static HashMap<String, String> players = new HashMap<>();
-    private static HashMap<String, String> roles = new HashMap<>();
+    private HashMap<String, String> roles = new HashMap<>();
 
     // Game variables
     private String victim;
     private String savedPlayer;
     private String story;
-    private static boolean gameOver = false;
+    private boolean gameOver = false;
+    private String currentMode;
 
     // Networking
     private boolean running = true;
@@ -29,6 +30,10 @@ public class Game {
         // Start the listener thread
         roomOpen = true;
         new Thread(this::startListener).start();
+    }
+
+    public String getCurrentMode() {
+        return currentMode;
     }
 
     public static void addPlayer(String player, String ip) {
@@ -63,7 +68,6 @@ public class Game {
         // Initialize game logic here
         System.out.println("Game started!");
         contactAllPlayers("GAME_STARTED");
-        // Add your game logic here
 
         assignRoles();
         while(!gameOver) {
@@ -273,12 +277,13 @@ public class Game {
                 }
                 
                 // requests for game logic
-                if(request.equals("START_GAME")) {
-                    // Do Something
+                if(request.equals("GAME_STARTED")) {
+                    Driver.showGamePanel();
                 }
                 if (request.startsWith("ROLE:")) {
                     String role = request.substring(5);
                     Driver.setRole(role);
+                    GamePanel.setRoleText("Your Role: " + role);
                     System.out.println("Assigned role: " + role + " to player: " + Driver.getPlayerName());
                 }
                 if(request.startsWith("CHAT:")) {
@@ -301,19 +306,28 @@ public class Game {
                 }
                 if (request.equals("NIGHT_PHASE")) {
                     // Do Something
+                    GamePanel.setGameText("The Town has went to sleep...ZZZ...");
+                    currentMode = "NIGHT_PHASE";
                 }
                 if (request.equals("DAY_PHASE")) {
                     // Do Something
+                    GamePanel.setGameText("The Town has woken up! The sun is shining and the day has begun!");
+                    currentMode = "DAY_PHASE";
                 }
                 if (request.startsWith("STORY:")) {
                     String storyRecieved = request.substring(6);
+                    GamePanel.setGameText(storyRecieved);
                     System.out.println(storyRecieved);
                 }
                 if (request.equals("CHOOSE_VICTIM")) {
                     // Do Something
+                    GamePanel.setGameText("Mafia, please choose a victim");
+                    currentMode = "CHOOSE_VICTIM";
                 }
                 if (request.equals("CHOOSE_SAVE")) {
                     // Do Something
+                    GamePanel.setGameText("Doctor, please choose a player to save");
+                    currentMode = "CHOOSE_SAVE";
                 }
                 if (request.startsWith("VICTIM:")) {
                     victim = request.substring(7);
@@ -325,9 +339,12 @@ public class Game {
                 }
                 if (request.equals("DISCUSSION_STARTED")) {
                     // Do Something
+                    GamePanel.setGameText("Discussion has started! Discuss with other players to find the Mafia");
                 }
                 if (request.equals("VOTE_STARTED")) {
                     // Do Something
+                    GamePanel.setGameText("Voting has started! Select the player you would like to remove");
+                    currentMode = "VOTE";
                 }
             }
         } catch (IOException e) {
@@ -365,6 +382,7 @@ public class Game {
 
     public void stop() throws IOException {
         running = false;
+        leaveRoom();
         socket.close();
     }
 

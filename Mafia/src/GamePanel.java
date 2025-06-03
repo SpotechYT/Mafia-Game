@@ -8,11 +8,11 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 public class GamePanel extends JPanel {
@@ -23,12 +23,13 @@ public class GamePanel extends JPanel {
     public static DefaultListModel<String> chatListModel;
     public static JList<String> chatList;
     public JButton chatButton;
-    public static JButton kickButton;
+
+    public static JLabel gameText;
+    public static JLabel roleText;
 
     public static JPanel rightPanel;
-    private boolean kickMode = false;
 
-    private Game game = Driver.getGame();
+    private static Game game = Driver.getGame();
 
     public GamePanel() {
         // Set layout
@@ -71,12 +72,14 @@ public class GamePanel extends JPanel {
         chatButton.setIcon(chatIcon);
         chatButton.setBackground(Color.black);
         leftPanel.add(chatButton, BorderLayout.SOUTH);
+
         mainPanel.add(leftPanel);
-        kickButton = new JButton();
-        ImageIcon kickIcon = new ImageIcon("Graphics/kick.png");
-        kickButton.setIcon(kickIcon);
-        kickButton.setBackground(Color.black);
+
         rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
+        roleText = new JLabel("No Role Assigned");
+        rightPanel.add(gameText);
+        gameText = new JLabel("Waiting for other players to join...");
+        rightPanel.add(gameText);
         updatePlayers();
 
         mainPanel.add(rightPanel);
@@ -95,72 +98,71 @@ public class GamePanel extends JPanel {
         // Add bottom panel to the bottom (SOUTH) of the main panel
         //add(bottomPanel, BorderLayout.SOUTH);
 
+
         chatButton.addActionListener(e -> {
             // This is your function body
             sendChatMessage(chatField.getText());
-            chatField.setText(""); // Clear the chat field after sending
-            updatePlayers();
         });
 
         backButton.addActionListener(e -> {
             // This is your function body
             leaveRoom();
         });
-        kickButton.addActionListener(e -> {
-            if(game.getPlayersMap().size() < 2) {
-                sendServerMessage("Not enough players to kick anyone.");
-            }else{
-                kickMode = true;
-                kickButton.setText("Select Player to Kick");
-            }
-        });
 
-        // Replace VK_YOUR_KEY with the desired key code, e.g., VK_A for 'A' key
-        chatField.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                chatField.setText(""); // Clear the chat field when clicked
-            }
-        });
-        chatField.addKeyListener(new java.awt.event.KeyAdapter() {
-            @Override
-            public void keyPressed(java.awt.event.KeyEvent e) {
-                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
-                    sendChatMessage(chatField.getText());
-                    chatField.setText(""); // Clear the chat field after sending
-                }
-            }
-        });
+        // Player Buttons
     }
 
-    public static void updatePlayers(){
-        //remove all existing buttons from the right panel
+    public static void updatePlayers() {
+        // remove all existing buttons from the right panel
         rightPanel.removeAll();
 
         // add the players to the right panel
         for (String player : Driver.getGame().getPlayers().split("\n")) {
             JButton playerButton = new JButton(player);
-            playerButton.setPreferredSize(new java.awt.Dimension(150, 50)); // Set a preferred size for each button
-            // Set the button to the player name
-            playerButton.setText(player);
+            playerButton.setPreferredSize(new java.awt.Dimension(150, 50));
 
-            playerButton.addActionListener(ev -> {
-                GamePanel panel = (GamePanel)SwingUtilities.getAncestorOfClass(GamePanel.class, rightPanel);
-                    if (panel != null && panel.kickMode) {
-                        panel.kickMode = false;
-                        panel.kickButton.setText("Kick Player");
-                        panel.game.contactAllPlayers("KICK:" + player);
-                        panel.sendServerMessage(player + " has been kicked.");
-                        updatePlayers();
-                    }
+            playerButton.addActionListener(e -> {
+                System.out.println("Clicked on player: " + player);
+                String currentMode = game.getCurrentMode();
+                switch(currentMode) {
+                    case "VOTE":
+                        // If in voting mode, send a vote for the player
+                        game.contactAllPlayers("VOTE:" + player);
+                        break;
+                    case "KICK":
+                        // If in kicking mode, send a kick request for the player
+                        game.contactAllPlayers("KICK:" + player);
+                        break;
+                    case "CHOSE_SAVE":
+                        // If in choose save mode, send a save request for the player
+                        game.contactAllPlayers("SAVE:" + player);
+                        break;
+                    case "CHOSE_VICTIM":
+                        // If in choose victim mode, send a victim request for the player
+                        game.contactAllPlayers("VICTIM:" + player);
+                        break;
+                    default:
+                        // Default action can be defined here if needed
+                        System.out.println("No action defined for current mode: " + currentMode);
+                }
             });
+
             rightPanel.add(playerButton);
         }
-        rightPanel.add(kickButton);
-        rightPanel.revalidate(); // Refresh the panel to show the new buttons
-        rightPanel.repaint(); // Repaint the panel to ensure the new buttons are displayed
 
+        // Refresh the panel after adding components
+        rightPanel.revalidate();
+        rightPanel.repaint();
+    }    
 
+    public static void setGameText(String text) {
+        // Set the game text to the given text
+        gameText.setText(text);
+    }
+
+    public static void setRoleText(String text) {
+        // Set the role text to the given text
+        roleText.setText(text);
     }
 
     public void sendChatMessage(String message) {
