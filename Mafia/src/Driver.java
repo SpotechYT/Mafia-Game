@@ -1,5 +1,8 @@
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -68,7 +71,17 @@ public class Driver {
         // Create the frame
         JFrame frame = new JFrame("Mafia");
         frame.setSize(1280, 720);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    game.stop();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
         frame.setLocationRelativeTo(null);
 
         // Create instances of panels
@@ -90,6 +103,10 @@ public class Driver {
         linkButton(gamePanel.backButton, "MainMenu");
         linkButton(settingPanel.backButton, "MainMenu");
 
+        joinRoom.startGameButton.addActionListener(e -> {
+            game.startGame();
+        });
+
         // Set the content pane
         frame.setContentPane(mainPanel);
         frame.setVisible(true);
@@ -97,8 +114,9 @@ public class Driver {
 
     public static void linkButton(JButton button, String panelName) {
         button.addActionListener(e -> cardLayout.show(mainPanel, panelName));
-
-        //testteset
     }
 
+    public static void showGamePanel() {
+        cardLayout.show(mainPanel, "GamePanel");
+    }
 }

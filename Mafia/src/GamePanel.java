@@ -8,6 +8,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -23,9 +24,12 @@ public class GamePanel extends JPanel {
     public static JList<String> chatList;
     public JButton chatButton;
 
+    public static JLabel gameText;
+    public static JLabel roleText;
+
     public static JPanel rightPanel;
 
-    private Game game = Driver.getGame();
+    private static Game game = Driver.getGame();
 
     public GamePanel() {
         // Set layout
@@ -72,6 +76,10 @@ public class GamePanel extends JPanel {
         mainPanel.add(leftPanel);
 
         rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
+        roleText = new JLabel("No Role Assigned");
+        rightPanel.add(gameText);
+        gameText = new JLabel("Waiting for other players to join...");
+        rightPanel.add(gameText);
         updatePlayers();
 
         mainPanel.add(rightPanel);
@@ -100,20 +108,61 @@ public class GamePanel extends JPanel {
             // This is your function body
             leaveRoom();
         });
+
+        // Player Buttons
     }
 
-    public static void updatePlayers(){
-        //remove all existing buttons from the right panel
+    public static void updatePlayers() {
+        // remove all existing buttons from the right panel
         rightPanel.removeAll();
 
         // add the players to the right panel
         for (String player : Driver.getGame().getPlayers().split("\n")) {
             JButton playerButton = new JButton(player);
-            playerButton.setPreferredSize(new java.awt.Dimension(150, 50)); // Set a preferred size for each button
-            // Set the button to the player name
-            playerButton.setText(player);
+            playerButton.setPreferredSize(new java.awt.Dimension(150, 50));
+
+            playerButton.addActionListener(e -> {
+                System.out.println("Clicked on player: " + player);
+                String currentMode = game.getCurrentMode();
+                switch(currentMode) {
+                    case "VOTE":
+                        // If in voting mode, send a vote for the player
+                        game.contactAllPlayers("VOTE:" + player);
+                        break;
+                    case "KICK":
+                        // If in kicking mode, send a kick request for the player
+                        game.contactAllPlayers("KICK:" + player);
+                        break;
+                    case "CHOSE_SAVE":
+                        // If in choose save mode, send a save request for the player
+                        game.contactAllPlayers("SAVE:" + player);
+                        break;
+                    case "CHOSE_VICTIM":
+                        // If in choose victim mode, send a victim request for the player
+                        game.contactAllPlayers("VICTIM:" + player);
+                        break;
+                    default:
+                        // Default action can be defined here if needed
+                        System.out.println("No action defined for current mode: " + currentMode);
+                }
+            });
+
             rightPanel.add(playerButton);
         }
+
+        // Refresh the panel after adding components
+        rightPanel.revalidate();
+        rightPanel.repaint();
+    }    
+
+    public static void setGameText(String text) {
+        // Set the game text to the given text
+        gameText.setText(text);
+    }
+
+    public static void setRoleText(String text) {
+        // Set the role text to the given text
+        roleText.setText(text);
     }
 
     public void sendChatMessage(String message) {
