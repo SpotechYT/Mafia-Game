@@ -77,8 +77,12 @@ public class Driver {
             public void windowClosing(WindowEvent e) {
                 try {
                     game.stop();
+                    frame.dispose();
+                    System.exit(0);
                 } catch (IOException ex) {
                     ex.printStackTrace();
+                    frame.dispose();
+                    System.exit(0);
                 }
             }
         });
@@ -100,11 +104,11 @@ public class Driver {
         linkButton(mainMenu.settingsButton, "SettingPanel");
         linkButton(joinRoom.backButton, "MainMenu");
         linkButton(joinRoom.startGameButton, "GamePanel");
-        linkButton(gamePanel.backButton, "MainMenu");
         linkButton(settingPanel.backButton, "MainMenu");
 
         joinRoom.startGameButton.addActionListener(e -> {
             game.startGame();
+            showGamePanel();
         });
 
         // Set the content pane
