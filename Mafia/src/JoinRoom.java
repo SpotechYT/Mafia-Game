@@ -35,7 +35,7 @@ public class JoinRoom extends JPanel {
     public JTextField ipAdField;
     public JButton createRoomButton;
     public JButton startGameButton;
-    // public JButton kickButton;
+    public JButton kickButton;
     public JPanel rightPanel;
     public JScrollPane playerScrollPane;
 
@@ -138,12 +138,15 @@ public class JoinRoom extends JPanel {
         startGameButton.setIcon(startGameIcon);
         startGameButton.setBackground(Color.black);
         startGameButton.setBorder(null);
-        // kickButton = new JButton("Kick Player");
+        kickButton = new JButton();
+        ImageIcon kickIcon = new ImageIcon("Graphics/kick.png");
+        kickButton.setIcon(kickIcon);
+        kickButton.setBackground(Color.black);
 
 
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(startGameButton);
-        // rightPanel.add(kickButton);
+        rightPanel.add(kickButton);
         rightPanel.add(Box.createVerticalStrut(20));
 
         rightPanel.add(Box.createVerticalGlue());
@@ -165,15 +168,15 @@ public class JoinRoom extends JPanel {
             game.leaveRoom();
         });
 
-        // kickButton.addActionListener(e -> {
-        //     // This is your function body
-        //     String selectedPlayer = playerList.getSelectedValue();
-        //     if (selectedPlayer != null) {
-        //         game.contactAllPlayers("KICK:" + selectedPlayer);
-        //     } else {
-        //         JOptionPane.showMessageDialog(this, "No player selected to kick.", "Error", JOptionPane.ERROR_MESSAGE);
-        //     }
-        // });
+        kickButton.addActionListener(e -> {
+            // This is your function body
+            String selectedPlayer = playerList.getSelectedValue();
+            if (selectedPlayer != null) {
+                game.contactAllPlayers("KICK:" + selectedPlayer);
+            } else {
+                JOptionPane.showMessageDialog(this, "No player selected to kick.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         add(centerPanel, BorderLayout.CENTER);
     }
