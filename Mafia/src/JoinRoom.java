@@ -136,6 +136,7 @@ public class JoinRoom extends JPanel {
         ImageIcon kickIcon = new ImageIcon("Graphics/kick.png");
         kickButton.setIcon(kickIcon);
         kickButton.setBackground(Color.black);
+       
 
 
         rightPanel.add(Box.createVerticalStrut(10));
