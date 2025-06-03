@@ -135,7 +135,7 @@ public class GamePanel extends JPanel {
                         // If in kicking mode, send a kick request for the player
                         game.contactAllPlayers("KICK:" + player);
                         break;
-                    case "CHOSE_SAVE":
+                    case "CHOOSE_SAVE":
                         // If in choose save mode, send a save request for the player
                         game.contactAllPlayers("SAVE:" + player);
                         break;
