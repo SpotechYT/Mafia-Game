@@ -1,24 +1,24 @@
-spot@Linux-P16:~/GitHub/Mafia-Game$  cd /home/spot/GitHub/Mafia-Game ; /usr/bin/env /usr/lib/jvm/jdk-23.0.1-oracle-x64/bin/java -XX:+ShowCodeDetailsInExceptionMessages -cp /home/spot/GitHub/Mafia-Game/Mafia/bin Driver 
-Going Online with namePlayer500
+spot@Linux-P16:~/GitHub/Mafia-Game$  /usr/bin/env /usr/lib/jvm/jdk-23.0.1-oracle-x64/bin/java -XX:+ShowCodeDetailsInExceptionMessages -cp /home/spot/GitHub/Mafia-Game/Mafia/bin Driver 
+Going Online with namePlayer882
 Listener started on UDP port 8888
 Refresh
 Sent Request 'DISCOVER_ROOM' to '10.9.139.152'
 Received request: 'ROOM_OPEN' from '10.9.139.152'
-Sent Request 'JOIN_ROOM:Player500' to '10.9.139.152'
-Received request: 'PLAYERS:Player801:10.9.139.152
-Player500:10.9.133.248
+Sent Request 'JOIN_ROOM:Player882' to '10.9.139.152'
+Received request: 'PLAYERS:Player457:10.9.139.152
+Player882:10.9.133.248
 ' from '10.9.139.152'
 Game started!
 Switching to GamePanel
 Sent Request 'GAME_STARTED' to '10.9.139.152'
 Sent Request 'GAME_STARTED' to '10.9.133.248'
-Message sent to all players: GAME_STARTED
 Received request: 'GAME_STARTED' from '10.9.133.248'
+Message sent to all players: GAME_STARTED
 Switching to GamePanel
 Roles assigned
-Distributing role Mafia to player Player801 at IP 10.9.139.152
+Distributing role Mafia to player Player457 at IP 10.9.139.152
 Sent Request 'ROLE:Mafia' to '10.9.139.152'
-Distributing role Doctor to player Player500 at IP 10.9.133.248
+Distributing role Doctor to player Player882 at IP 10.9.133.248
 Sent Request 'ROLE:Doctor' to '10.9.133.248'
 Roles distributed to players
 Night phase started
@@ -29,10 +29,13 @@ Sent Request 'CHOOSE_VICTIM' to 'null'
 Sent Request 'CHOOSE_SAVE' to 'null'
 Waiting for players to choose victim and saved player...
 Received request: 'ROLE:Doctor' from '10.9.133.248'
-Assigned role: Doctor to player: Player500
+Assigned role: Doctor to player: Player882
 Received request: 'NIGHT_PHASE' from '10.9.133.248'
 Received request: 'CHOOSE_VICTIM' from '127.0.0.1'
 Received request: 'CHOOSE_SAVE' from '127.0.0.1'
-Clicked on player: Player801
-No action defined for current mode: CHOOSE_SAVE
-spot@Linux-P16:~/GitHub/Mafia-Game$ 
+Clicked on player: Player457
+Sent Request 'SAVE:Player457' to '10.9.139.152'
+Sent Request 'SAVE:Player457' to '10.9.133.248'
+Message sent to all players: SAVE:Player457
+Received request: 'SAVE:Player457' from '10.9.133.248'
+Saved player chosen: Player457

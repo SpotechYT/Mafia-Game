@@ -158,7 +158,7 @@ public class GamePanel extends JPanel {
                         // If in choose save mode, send a save request for the player
                         game.contactAllPlayers("SAVE:" + player);
                         break;
-                    case "CHOSE_VICTIM":
+                    case "CHOOSE_VICTIM":
                         // If in choose victim mode, send a victim request for the player
                         game.contactAllPlayers("VICTIM:" + player);
                         break;
