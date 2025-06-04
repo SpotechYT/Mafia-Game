@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
@@ -29,7 +30,7 @@ public class GamePanel extends JPanel {
     public static String prevMode;
 
 
-    public static JLabel gameText;
+    public static JTextArea gameText;
     public static JLabel roleText;
 
     public static JPanel rightPanel;
@@ -94,17 +95,27 @@ public class GamePanel extends JPanel {
 
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         
-        JPanel trPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
-        brPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        JPanel trPanel = new JPanel();
+        trPanel.setLayout(new BoxLayout(trPanel, BoxLayout.Y_AXIS));
+        trPanel.setBackground(Color.BLACK);
 
-        trPanel.setBackground(java.awt.Color.BLACK);
-        brPanel.setBackground(java.awt.Color.BLACK);
+        brPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        brPanel.setBackground(Color.BLACK);
 
         roleText = new JLabel("No Role Assigned");
         roleText.setForeground(Color.WHITE);
         trPanel.add(roleText);
-        gameText = new JLabel("Waiting for other players to join...");
+
+        // Use JTextArea for wrapping
+        gameText = new JTextArea("Waiting for other players to join...");
+        gameText.setLineWrap(true);
+        gameText.setWrapStyleWord(true);
+        gameText.setEditable(false);
+        gameText.setFocusable(false);
+        gameText.setOpaque(false); // Transparent background
         gameText.setForeground(Color.WHITE);
+        gameText.setMaximumSize(new Dimension(300, 100)); // Limit width so it wraps
+
         trPanel.add(gameText);
 
         updatePlayers();
