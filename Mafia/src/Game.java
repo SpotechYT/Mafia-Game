@@ -91,7 +91,10 @@ public class Game {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            gameOver = true;
+            if(players.size() <= 1) {
+                gameOver = true;
+                break;
+            }
         }
     }
 
@@ -238,10 +241,7 @@ public class Game {
         if (mostVotedPlayer != null) {
             contactAllPlayers("CHAT:" + mostVotedPlayer + " has been voted out by the town!");
             System.out.println("Player " + mostVotedPlayer + " has been voted out.");
-            players.remove(mostVotedPlayer);
-            roles.remove(mostVotedPlayer);
-            JoinRoom.removePlayerFromList(mostVotedPlayer);
-            GamePanel.updatePlayers();
+            contactAllPlayers("KICK:" + mostVotedPlayer);
         } else {
             System.out.println("No player was voted out.");
         }
@@ -336,7 +336,21 @@ public class Game {
                     GamePanel.updatePlayers();
                     System.out.println("Player " + playerName + " left the room.");
                 }
-                
+                if (request.startsWith("KICK:")) {
+                    String playerToKick = request.substring(5);
+                    players.remove(playerToKick);
+                    try {
+                        roles.remove(playerToKick);
+                    } catch (Exception e) {
+                        System.out.println("No role assigned to player: " + playerToKick);
+                    }
+                    if (Driver.getPlayerName().equals(playerToKick)) {
+                        leaveRoom();
+                    }
+                    JoinRoom.removePlayerFromList(playerToKick);
+                    GamePanel.updatePlayers();
+                    System.out.println("Player " + playerToKick + " has been kicked from the room.");
+                }
                 // requests for game logic
                 if(request.equals("GAME_STARTED")) {
                     Driver.showGamePanel();
