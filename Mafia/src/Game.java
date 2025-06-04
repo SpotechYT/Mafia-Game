@@ -346,13 +346,13 @@ public class Game {
                 }
                 if (request.equals("NIGHT_PHASE")) {
                     // Do Something
-                    contactAllPlayers("Sleep tight!");
-                    GamePanel.setGameText("The Town has went to sleep...ZZZ...");
+                    contactAllPlayers("CHAT: Sleep tight!");
+                    GamePanel.setGameText("The Town has Enter IP addresswent to sleep...ZZZ...");
                     currentMode = "NIGHT_PHASE";
                 }
                 if (request.equals("DAY_PHASE")) {
                     // Do Something
-                    contactAllPlayers("Good Morning!");
+                    contactAllPlayers("CHAT: Good Morning!");
                     GamePanel.setGameText("The Town has woken up! The sun is shining and the day has begun!");
                     currentMode = "DAY_PHASE";
                 }
@@ -390,7 +390,7 @@ public class Game {
                 }
                 if (request.startsWith("VOTE:")) {
                     String votedPlayer = request.substring(5);
-                    votes.put(players.get(senderIP), votedPlayer);
+                    votes.put(getKeyByValue(players, senderIP), votedPlayer);
                     contactAllPlayers("CHAT:" + players.get(senderIP) + " voted for " + votedPlayer);
                     System.out.println("Vote received for player: " + votedPlayer + " from IP: " + senderIP);
                 }
