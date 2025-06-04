@@ -4,11 +4,13 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Game {
     
     // Player, IP
     private static HashMap<String, String> players = new HashMap<>();
+    // Player, Role
     private HashMap<String, String> roles = new HashMap<>();
 
     // Game variables
@@ -143,10 +145,10 @@ public class Game {
         contactAllPlayers("NIGHT_PHASE");
 
         // Tell the Mafia to choose a victim
-        sendRequest(roles.get("Mafia"), "CHOOSE_VICTIM");
+        sendRequest(players.get(getKeyByValue(roles, "Mafia")), "CHOOSE_VICTIM");
 
         // Tell the Doctor to choose a player to save
-        sendRequest(roles.get("Doctor"), "CHOOSE_SAVE");
+        sendRequest(players.get(getKeyByValue(roles, "Doctor")), "CHOOSE_SAVE");
 
         System.out.println("Waiting for players to choose victim and saved player...");
 
@@ -387,6 +389,15 @@ public class Game {
         running = false;
         leaveRoom();
         socket.close();
+    }
+
+    public String getKeyByValue(Map<String, String> map, String value) {
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            if (entry.getValue().equals(value)) {
+                return entry.getKey();
+            }
+        }
+        return null; // or throw an exception if not found
     }
 
     public HashMap<String, String> getPlayersMap() {
