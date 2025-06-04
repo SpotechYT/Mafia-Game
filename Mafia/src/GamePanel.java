@@ -28,6 +28,7 @@ public class GamePanel extends JPanel {
     public static JLabel roleText;
 
     public static JPanel rightPanel;
+    public static JPanel brPanel;
 
     private static Game game = Driver.getGame();
 
@@ -75,15 +76,26 @@ public class GamePanel extends JPanel {
 
         mainPanel.add(leftPanel);
 
-        rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
+
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        
+        JPanel trPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        brPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+
+        trPanel.setBackground(java.awt.Color.BLACK);
+        brPanel.setBackground(java.awt.Color.BLACK);
+
         roleText = new JLabel("No Role Assigned");
         roleText.setForeground(Color.WHITE);
-        rightPanel.add(roleText);
+        trPanel.add(roleText);
         gameText = new JLabel("Waiting for other players to join...");
         gameText.setForeground(Color.WHITE);
-        rightPanel.add(gameText);
+        trPanel.add(gameText);
+
         updatePlayers();
 
+        rightPanel.add(trPanel);
+        rightPanel.add(brPanel);
         mainPanel.add(rightPanel);
 
         // // Create the bottom panel for game controls
@@ -100,7 +112,6 @@ public class GamePanel extends JPanel {
         // Add bottom panel to the bottom (SOUTH) of the main panel
         //add(bottomPanel, BorderLayout.SOUTH);
 
-
         chatButton.addActionListener(e -> {
             // This is your function body
             sendChatMessage(chatField.getText());
@@ -110,13 +121,16 @@ public class GamePanel extends JPanel {
             // This is your function body
             leaveRoom();
         });
-
-        // Player Buttons
     }
 
     public static void updatePlayers() {
+        // Call the method with the right panel
+        addPlayers(brPanel);
+    }
+
+    public static void addPlayers(JPanel thePanel) {
         // remove all existing buttons from the right panel
-        rightPanel.removeAll();
+        thePanel.removeAll();
 
         // add the players to the right panel
         for (String player : Driver.getGame().getPlayers().split("\n")) {
@@ -149,12 +163,12 @@ public class GamePanel extends JPanel {
                 }
             });
 
-            rightPanel.add(playerButton);
+            thePanel.add(playerButton);
         }
 
         // Refresh the panel after adding components
-        rightPanel.revalidate();
-        rightPanel.repaint();
+        thePanel.revalidate();
+        thePanel.repaint();
     }    
 
     public static void setGameText(String text) {
