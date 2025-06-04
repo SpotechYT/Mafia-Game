@@ -153,6 +153,11 @@ public class JoinRoom extends JPanel {
             game.leaveRoom();
         });
 
+        ipAdField.addActionListener(e -> {
+            onRefreshRooms();
+            ipAdField.setText("");
+        });
+
         add(centerPanel, BorderLayout.CENTER);
     }
 

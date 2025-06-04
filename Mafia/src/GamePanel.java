@@ -121,6 +121,11 @@ public class GamePanel extends JPanel {
             // This is your function body
             leaveRoom();
         });
+
+        chatField.addActionListener(e -> {
+            sendChatMessage(chatField.getText());
+            chatField.setText("");
+        });
     }
 
     public static void updatePlayers() {
