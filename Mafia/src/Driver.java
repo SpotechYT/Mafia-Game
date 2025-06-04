@@ -1,8 +1,5 @@
 
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -73,21 +70,7 @@ public class Driver {
         // Create the frame
         frame = new JFrame("Mafia");
         frame.setSize(1280, 720);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                try {
-                    game.stop();
-                    frame.dispose();
-                    System.exit(0);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    frame.dispose();
-                    System.exit(0);
-                }
-            }
-        });
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
 
         // Create instances of panels
