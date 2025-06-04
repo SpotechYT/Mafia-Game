@@ -12,6 +12,8 @@ public class Game {
     private static HashMap<String, String> players = new HashMap<>();
     // Player, Role
     private HashMap<String, String> roles = new HashMap<>();
+    // Player, Vote
+    private HashMap<String, String> votes = new HashMap<>();
 
     // Game variables
     private String victim;
@@ -178,8 +180,23 @@ public class Game {
 
         // Notify players about the start of the day phase
         contactAllPlayers("DAY_PHASE");
+        while (story.isEmpty()) {
+            // Wait for the story to generate
+            try {
+                Thread.sleep(500); // Sleep for a second before checking again
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         // Distribute the story to all players
         contactAllPlayers("STORY:" + story);
+
+        try {
+            Thread.sleep(10000); // 10 seconds for players to see the story
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // Give the players time to discuss
         contactAllPlayers("DISCUSSION_STARTED");
@@ -190,12 +207,44 @@ public class Game {
             e.printStackTrace();
         }
 
+        votes.clear(); // Clear previous votes
+
         // After discussion, ask players to vote
         contactAllPlayers("VOTE_STARTED");
 
         // Wait to recieve all votes
+        while (votes.size() < players.size()) {
+            try {
+                Thread.sleep(500); // Sleep for a second before checking again
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         // Sum them up
+        Map<String, Integer> voteCount = new HashMap<>();
+        for (String vote : votes.values()) {
+            voteCount.put(vote, voteCount.getOrDefault(vote, 0) + 1);
+        }
+        String mostVotedPlayer = null;
+        int maxVotes = 0;
+        for (Map.Entry<String, Integer> entry : voteCount.entrySet()) {
+            if (entry.getValue() > maxVotes) {
+                maxVotes = entry.getValue();
+                mostVotedPlayer = entry.getKey();
+            }
+        }
         // Kick the player with the most votes
+        if (mostVotedPlayer != null) {
+            contactAllPlayers("CHAT:" + mostVotedPlayer + " has been voted out by the town!");
+            System.out.println("Player " + mostVotedPlayer + " has been voted out.");
+            players.remove(mostVotedPlayer);
+            roles.remove(mostVotedPlayer);
+            JoinRoom.removePlayerFromList(mostVotedPlayer);
+            GamePanel.updatePlayers();
+        } else {
+            System.out.println("No player was voted out.");
+        }
         // Display the results
         System.out.println("Day phase ended");
     }
@@ -321,11 +370,13 @@ public class Game {
                 }
                 if (request.equals("NIGHT_PHASE")) {
                     // Do Something
+                    contactAllPlayers("Sleep tight!");
                     GamePanel.setGameText("The Town has went to sleep...ZZZ...");
                     currentMode = "NIGHT_PHASE";
                 }
                 if (request.equals("DAY_PHASE")) {
                     // Do Something
+                    contactAllPlayers("Good Morning!");
                     GamePanel.setGameText("The Town has woken up! The sun is shining and the day has begun!");
                     currentMode = "DAY_PHASE";
                 }
@@ -360,6 +411,12 @@ public class Game {
                     // Do Something
                     GamePanel.setGameText("Voting has started! Select the player you would like to remove");
                     currentMode = "VOTE";
+                }
+                if (request.startsWith("VOTE:")) {
+                    String votedPlayer = request.substring(5);
+                    votes.put(players.get(senderIP), votedPlayer);
+                    contactAllPlayers("CHAT:" + players.get(senderIP) + " voted for " + votedPlayer);
+                    System.out.println("Vote received for player: " + votedPlayer + " from IP: " + senderIP);
                 }
             }
         } catch (IOException e) {
