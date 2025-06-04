@@ -111,4 +111,11 @@ public class Driver {
         frame.setContentPane(mainPanel);
         frame.setVisible(true);
     }
+
+    public static void showJoinRoom() {
+        cardLayout.show(mainPanel, "JoinRoom");
+
+        frame.setContentPane(mainPanel);
+        frame.setVisible(true);
+    }
 }

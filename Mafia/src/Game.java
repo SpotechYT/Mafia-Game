@@ -172,7 +172,7 @@ public class Game {
             // Saved Story
             story = MafiaScenarioGenerator.getScenario(victim, true);
         } else {
-            // Deat Story
+            // Death Story
             story = MafiaScenarioGenerator.getScenario(victim, false);
         }
     }
@@ -377,6 +377,9 @@ public class Game {
                     }
                     if(Driver.getPlayerName().equals(playerToKick)) {
                         leaveRoom();
+                        Driver.showJoinRoom();
+                        JoinRoom.clearPlayerList();
+                        GamePanel.updatePlayers();
                     }   
                     JoinRoom.removePlayerFromList(playerToKick);
                     GamePanel.updatePlayers();     
