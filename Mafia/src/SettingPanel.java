@@ -75,7 +75,6 @@ public class SettingPanel extends JPanel {
         centerPanel.add(rightPanel);
 
         add(centerPanel, BorderLayout.CENTER);
-
         
         nameButton.addActionListener(e -> {
             rightPanel.removeAll();
@@ -99,6 +98,14 @@ public class SettingPanel extends JPanel {
             rightPanel.add(newName);
             rightPanel.revalidate();
             rightPanel.repaint();
+
+            nameTextPane.addActionListener(f -> {
+                String name = nameTextPane.getText();
+                Driver.setPlayerName(name);
+                //code to change the name
+                resetSettings();
+                nameTextPane.setText("");
+            });
 
         });
         

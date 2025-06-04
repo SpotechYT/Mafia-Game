@@ -169,6 +169,11 @@ public class JoinRoom extends JPanel {
             game.leaveRoom();
         });
 
+        ipAdField.addActionListener(e -> {
+            onRefreshRooms();
+            ipAdField.setText("");
+        });
+
         kickButton.addActionListener(e -> {
             // This is your function body
             String selectedPlayer = playerList.getSelectedValue();
