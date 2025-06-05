@@ -109,7 +109,6 @@ public class GamePanel extends JPanel {
 
         roleText = new JLabel("No Role Assigned");
         roleText.setForeground(Color.WHITE);
-        //roleText.setAlignmentX(Component.CENTER_ALIGNMENT);
         trPanel.add(roleText);
 
         // Use JTextArea for wrapping
@@ -120,8 +119,7 @@ public class GamePanel extends JPanel {
         gameText.setFocusable(false);
         gameText.setOpaque(false); // Transparent background
         gameText.setForeground(Color.WHITE);
-        //gameText.setAlignmentX(Component.CENTER_ALIGNMENT);
-        //gameText.setMaximumSize(new Dimension(300, 100)); // Limit width so it wraps
+        gameText.setMaximumSize(new Dimension(300, 100)); // Limit width so it wraps
 
         trPanel.add(gameText);
 
