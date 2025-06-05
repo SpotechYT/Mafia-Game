@@ -316,7 +316,7 @@ public class Game {
                 if(request.startsWith("JOIN_ROOM:")) {
                     String playerName = request.substring(10);
                     addPlayer(playerName, senderIP);
-                    sendRequest(senderIP, "PLAYERS:" + getPlayersAndIPs());
+                    contactAllPlayers("PLAYERS:" + getPlayersAndIPs());
                     System.out.println("Player " + playerName + " joined the room.");
                 }
                 if(request.startsWith("PLAYERS:")) {
