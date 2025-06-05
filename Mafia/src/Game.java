@@ -421,7 +421,7 @@ public class Game {
                 if (request.startsWith("VOTE:")) {
                     String votedPlayer = request.substring(5);
                     votes.put(getKeyByValue(players, senderIP), votedPlayer);
-                    contactAllPlayers("CHAT:" + players.get(senderIP) + " voted for " + votedPlayer);
+                    contactAllPlayers("CHAT:" + getKeyByValue(players, senderIP) + " voted for " + votedPlayer);
                     System.out.println("Vote received for player: " + votedPlayer + " from IP: " + senderIP);
                 }
             }
@@ -437,7 +437,11 @@ public class Game {
             players.clear();
             roles.clear();
             votes.clear();
-            stopVoiceChat(Driver.getPlayerName());
+            try {
+                stopVoiceChat(Driver.getPlayerName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             voiceChats.clear();
             JoinRoom.clearPlayerList();
             contactAllPlayers("PLAYER_LEFT");
@@ -504,7 +508,7 @@ public class Game {
 
     public void stopVoiceChat(String playerName) {
         VoiceChat vc = voiceChats.get(playerName);
-        if (!vc.equals(null)) {
+        if (!vc.equals(null) && voiceChatEnabled == true) {
             System.out.println("Stopping voice chat for player: " + playerName);
             vc.stop();
             voiceChats.remove(playerName);
