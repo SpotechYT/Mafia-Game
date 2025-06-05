@@ -9,7 +9,7 @@ public class VoiceChat {
 
     private static final int PORT = 55555;
     private static final int BUFFER_SIZE = 4096;
-    private static final int NOISE_THRESHOLD = 200; // Noise gate threshold
+    private static final int NOISE_THRESHOLD = 175; // Noise gate threshold
 
     private TargetDataLine microphone;
     private SourceDataLine speakers;
