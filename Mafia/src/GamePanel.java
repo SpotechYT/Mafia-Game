@@ -77,11 +77,7 @@ public class GamePanel extends JPanel {
         leftPanel.add(chatField);
         leftPanel.add(chatScrollPane, BorderLayout.CENTER);
 
-        JButton voiceChatButton = new JButton("Start Voice Chat");
-        voiceChatButton.setBackground(Color.black);
-        voiceChatButton.setForeground(Color.white);
-        voiceChatButton.setPreferredSize(new Dimension(160, 40));
-        leftPanel.add(voiceChatButton);
+        
 
         chatButton = new JButton();
         ImageIcon chatIcon = new ImageIcon("Graphics/send.png");
@@ -130,18 +126,25 @@ public class GamePanel extends JPanel {
         mainPanel.add(rightPanel);
 
         // // Create the bottom panel for game controls
-        // JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        // bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
-        // // Buttons to add: leave room, vote kick
-        // JButton leaveRoomButton = new JButton("Leave Room");
-        // bottomPanel.add(leaveRoomButton);
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
+        // Buttons to add: leave room, vote kick
+        bottomPanel.setBackground(java.awt.Color.BLACK);
+        JButton voiceChatButton = new JButton("Start Voice Chat");
+        voiceChatButton.setBackground(Color.black);
+        voiceChatButton.setForeground(Color.white);
+        voiceChatButton.setPreferredSize(new Dimension(160, 40));
+        bottomPanel.add(voiceChatButton);
+        bottomPanel.add(kickButton);
 
         // Add top panel to the top (NORTH) of the main panel
         add(topPanel, BorderLayout.NORTH);
         // Add main panel to the center of the main panel
         add(mainPanel, BorderLayout.CENTER);
         // Add bottom panel to the bottom (SOUTH) of the main panel
-        //add(bottomPanel, BorderLayout.SOUTH);
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        
 
         chatButton.addActionListener(e -> {
             // This is your function body
@@ -230,7 +233,7 @@ public class GamePanel extends JPanel {
 
             thePanel.add(playerButton);
         }
-        rightPanel.add(kickButton);
+        //rightPanel.add(kickButton);
 
         // Refresh the panel after adding components
         thePanel.revalidate();
