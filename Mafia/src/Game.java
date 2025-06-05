@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ public class Game {
     private HashMap<String, String> roles = new HashMap<>();
     // Player, Vote
     private HashMap<String, String> votes = new HashMap<>();
+    // Player, VoiceChat
+    private HashMap<String, VoiceChat> voiceChats = new HashMap<>();
 
     // Game variables
     private String victim;
@@ -21,6 +24,7 @@ public class Game {
     private String story;
     private boolean gameOver = false;
     private String currentMode;
+    private boolean voiceChatEnabled = false;
 
     // Networking
     private boolean running = true;
@@ -336,21 +340,6 @@ public class Game {
                     GamePanel.updatePlayers();
                     System.out.println("Player " + playerName + " left the room.");
                 }
-                if (request.startsWith("KICK:")) {
-                    String playerToKick = request.substring(5);
-                    players.remove(playerToKick);
-                    try {
-                        roles.remove(playerToKick);
-                    } catch (Exception e) {
-                        System.out.println("No role assigned to player: " + playerToKick);
-                    }
-                    if (Driver.getPlayerName().equals(playerToKick)) {
-                        leaveRoom();
-                    }
-                    JoinRoom.removePlayerFromList(playerToKick);
-                    GamePanel.updatePlayers();
-                    System.out.println("Player " + playerToKick + " has been kicked from the room.");
-                }
                 // requests for game logic
                 if(request.equals("GAME_STARTED")) {
                     Driver.showGamePanel();
@@ -447,8 +436,12 @@ public class Game {
             roomInfo = "Not in a room";
             players.clear();
             roles.clear();
+            votes.clear();
+            stopVoiceChat(Driver.getPlayerName());
+            voiceChats.clear();
             JoinRoom.clearPlayerList();
             contactAllPlayers("PLAYER_LEFT");
+
             return "You have left the room.";
         } else {
          return "You are not in a room.";
@@ -477,4 +470,60 @@ public class Game {
     public HashMap<String, String> getPlayersMap() {
         return players;
     }
+    public HashMap<String, String> getRolesMap() {
+        return roles;
+    }
+    public ArrayList<String> getIPs() {
+        ArrayList<String> ips = new ArrayList<>();
+        for (String player : players.keySet()) {
+            ips.add(players.get(player));
+        }
+        return ips;
+    }
+    public ArrayList<String> getPlayerNames() {
+        ArrayList<String> names = new ArrayList<>();
+        for (String player : players.keySet()) {
+            names.add(player);
+        }
+        return names;
+    }
+
+    public void startVoiceChat(String playerName) {
+        if (!voiceChats.containsKey(playerName)) {
+            VoiceChat vc = new VoiceChat(this);
+            try {
+                System.out.println("Starting voice chat for player: " + playerName);
+                vc.start();
+                voiceChats.put(playerName, vc);
+                voiceChatEnabled = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void stopVoiceChat(String playerName) {
+        VoiceChat vc = voiceChats.get(playerName);
+        if (!vc.equals(null)) {
+            System.out.println("Stopping voice chat for player: " + playerName);
+            vc.stop();
+            voiceChats.remove(playerName);
+            voiceChatEnabled = false;
+        }
+    }
+
+    public void stopAllVoiceChats() {
+        for (VoiceChat vc : voiceChats.values()) {
+            vc.stop();
+        }
+    }
+
+    public boolean isVoiceChatEnabled() {
+        return voiceChatEnabled;
+    }
+
+    public void setVoiceChatEnabled(boolean voiceChatEnabled) {
+        this.voiceChatEnabled = voiceChatEnabled;
+    }
+    
 }

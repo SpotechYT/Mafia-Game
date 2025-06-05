@@ -29,7 +29,6 @@ public class GamePanel extends JPanel {
     public static ImageIcon kickIcon2;
     public static String prevMode;
 
-
     public static JTextArea gameText;
     public static JLabel roleText;
 
@@ -77,6 +76,12 @@ public class GamePanel extends JPanel {
         JoinRoom.applyColor(chatScrollPane);
         leftPanel.add(chatField);
         leftPanel.add(chatScrollPane, BorderLayout.CENTER);
+
+        JButton voiceChatButton = new JButton("Start Voice Chat");
+        voiceChatButton.setBackground(Color.black);
+        voiceChatButton.setForeground(Color.white);
+        voiceChatButton.setPreferredSize(new Dimension(160, 40));
+        leftPanel.add(voiceChatButton);
 
         chatButton = new JButton();
         ImageIcon chatIcon = new ImageIcon("Graphics/send.png");
@@ -154,13 +159,6 @@ public class GamePanel extends JPanel {
             prevMode = game.getCurrentMode();
             kickButton.setIcon(kickIcon2);
             game.setCurrentMode("KICK");
-            // if(game.getPlayersMap().size() < 2) {
-            //     sendServerMessage("Not enough players to kick anyone.");
-            // }else{
-            //     prevMode = game.getCurrentMode();
-            //     kickButton.setText("Select Player to Kick");
-            //     game.setCurrentMode("KICK");
-            // }
         });
 
         // Replace VK_YOUR_KEY with the desired key code, e.g., VK_A for 'A' key
@@ -177,6 +175,15 @@ public class GamePanel extends JPanel {
                     sendChatMessage(chatField.getText());
                     chatField.setText(""); // Clear the chat field after sending
                 }
+            }
+        });
+        voiceChatButton.addActionListener(e -> {
+            if (game.isVoiceChatEnabled()) {
+                game.stopVoiceChat(Driver.getPlayerName());
+                voiceChatButton.setText("Start Voice Chat");
+            } else {
+                game.startVoiceChat(Driver.getPlayerName());
+                voiceChatButton.setText("Stop Voice Chat");
             }
         });
     }
