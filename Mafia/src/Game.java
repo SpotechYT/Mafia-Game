@@ -95,6 +95,7 @@ public class Game {
 
     private void gameLogic(){
         assignRoles();
+
         while (!gameOver) {
             // Game loop
             try {
@@ -106,10 +107,12 @@ public class Game {
             if(roles.containsValue("Mafia") == false){
                 gameOver = true;
                 contactAllPlayers("CHAT: Game Over! The Citizens have won!");
+                contactAllPlayers("GAME_OVER:Game Over! The Citizens have won!");
                 break;
             } else if(players.size() <= 1) {
                 gameOver = true;
                 contactAllPlayers("CHAT: Game Over! The Mafia have won!");
+                contactAllPlayers("GAME_OVER:Game Over! The Mafia have won!");
                 break;
             }
         }
@@ -166,6 +169,12 @@ public class Game {
         // Tell the players that the night phase has started
         contactAllPlayers("NIGHT_PHASE");
 
+        try {
+            Thread.sleep(1000); // Sleep for a second before checking again
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // Tell the Mafia to choose a victim
         sendRequest(players.get(getKeyByValue(roles, "Mafia")), "CHOOSE_VICTIM");
 
@@ -200,6 +209,13 @@ public class Game {
 
         // Notify players about the start of the day phase
         contactAllPlayers("DAY_PHASE");
+        
+        try {
+            Thread.sleep(1000); // Sleep for a second before checking again
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         while (story.isEmpty()) {
             // Wait for the story to generate
             try {
@@ -213,6 +229,10 @@ public class Game {
         contactAllPlayers("STORY:" + story);
         // Print the story to the chat
         contactAllPlayers("CHAT:" + story);
+        // Kill the player if they were not saved
+        if (!victim.equals(savedPlayer)) {
+            contactAllPlayers("KICK:" + victim);
+        }
 
         try {
             Thread.sleep(10000); // 10 seconds for players to see the story
@@ -451,6 +471,10 @@ public class Game {
                     votes.put(getKeyByValue(players, senderIP), votedPlayer);
                     contactAllPlayers("CHAT:" + getKeyByValue(players, senderIP) + " voted for " + votedPlayer);
                     System.out.println("Vote received for player: " + votedPlayer + " from IP: " + senderIP);
+                }
+                if(request.startsWith("GAME_OVER:")) {
+                    String gameOverMessage = request.substring(9);
+                    GamePanel.setGameText(gameOverMessage);
                 }
             }
         } catch (IOException e) {

@@ -207,6 +207,7 @@ public class GamePanel extends JPanel {
                     case "VOTE":
                         // If in voting mode, send a vote for the player
                         game.contactAllPlayers("VOTE:" + player);
+                        game.setCurrentMode("NONE");
                         break;
                     case "KICK":
                         // If in kicking mode, send a kick request for the player
@@ -217,10 +218,12 @@ public class GamePanel extends JPanel {
                     case "CHOOSE_SAVE":
                         // If in choose save mode, send a save request for the player
                         game.contactAllPlayers("SAVE:" + player);
+                        game.setCurrentMode("NONE");
                         break;
                     case "CHOOSE_VICTIM":
                         // If in choose victim mode, send a victim request for the player
                         game.contactAllPlayers("VICTIM:" + player);
+                        game.setCurrentMode("NONE");
                         break;
                     default:
                         // Default action can be defined here if needed
