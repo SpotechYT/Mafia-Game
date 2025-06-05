@@ -92,7 +92,7 @@ public class Driver {
         linkButton(settingPanel.backButton, "MainMenu");
 
         joinRoom.startGameButton.addActionListener(e -> {
-            game.startGame();
+            game.startGameHost();
         });
 
         // Set the content pane

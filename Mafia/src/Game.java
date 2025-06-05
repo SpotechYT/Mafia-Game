@@ -74,7 +74,7 @@ public class Game {
         return playerList.toString();
     }
 
-    public void startGame() {
+    public void startGameHost() {
         roomOpen = false;
 
         // Initialize game logic here
@@ -83,6 +83,14 @@ public class Game {
         contactAllPlayers("GAME_STARTED");
 
         new Thread(this::gameLogic).start();
+    }
+
+    public void startGameClient() {
+        roomOpen = false;
+
+        // Initialize game logic here
+        System.out.println("Game started!");
+        Driver.showGamePanel();
     }
 
     private void gameLogic(){
@@ -95,8 +103,13 @@ public class Game {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(players.size() <= 1) {
+            if(roles.containsValue("Mafia") == false){
                 gameOver = true;
+                contactAllPlayers("CHAT: Game Over! The Citizens have won!");
+                break;
+            } else if(players.size() <= 1) {
+                gameOver = true;
+                contactAllPlayers("CHAT: Game Over! The Mafia have won!");
                 break;
             }
         }
@@ -198,6 +211,8 @@ public class Game {
 
         // Distribute the story to all players
         contactAllPlayers("STORY:" + story);
+        // Print the story to the chat
+        contactAllPlayers("CHAT:" + story);
 
         try {
             Thread.sleep(10000); // 10 seconds for players to see the story
@@ -206,12 +221,16 @@ public class Game {
         }
 
         // Give the players time to discuss
-        contactAllPlayers("DISCUSSION_STARTED");
+        int timeSpentOnDiscussion = 30; // 30 seconds for discussion
 
-        try {
-            Thread.sleep(30000); // 30 seconds for discussion
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while(timeSpentOnDiscussion > 0){
+            try {
+                Thread.sleep(1000);
+                timeSpentOnDiscussion--;
+                contactAllPlayers("DISCUSSION_STARTED:" + timeSpentOnDiscussion);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         votes.clear(); // Clear previous votes
@@ -243,12 +262,20 @@ public class Game {
         }
         // Kick the player with the most votes
         if (mostVotedPlayer != null) {
-            contactAllPlayers("CHAT:" + mostVotedPlayer + " has been voted out by the town!");
+            contactAllPlayers("CHAT:" + mostVotedPlayer + " has been voted out by the town. " + mostVotedPlayer + " was a " + roles.get(mostVotedPlayer) + "!");
             System.out.println("Player " + mostVotedPlayer + " has been voted out.");
             contactAllPlayers("KICK:" + mostVotedPlayer);
         } else {
+            contactAllPlayers("CHAT: No player was voted out?");
             System.out.println("No player was voted out.");
         }
+
+        try {
+            Thread.sleep(10000); // 10 seconds for players to see what happened
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // Display the results
         System.out.println("Day phase ended");
     }
@@ -342,7 +369,7 @@ public class Game {
                 }
                 // requests for game logic
                 if(request.equals("GAME_STARTED")) {
-                    Driver.showGamePanel();
+                    startGameClient();
                 }
                 if (request.startsWith("ROLE:")) {
                     String role = request.substring(5);
@@ -409,9 +436,10 @@ public class Game {
                     savedPlayer = request.substring(5);
                     System.out.println("Saved player chosen: " + savedPlayer);
                 }
-                if (request.equals("DISCUSSION_STARTED")) {
-                    // Do Something
-                    GamePanel.setGameText("Discussion has started! Discuss with other players to find the Mafia");
+                if (request.startsWith("DISCUSSION_STARTED:")) {
+                    String timeLeft = request.substring(19);
+                    GamePanel.setGameText("Discussion has started! Discuss with other players to find the Mafia. " + 
+                                          "Time left: " + timeLeft + " seconds");
                 }
                 if (request.equals("VOTE_STARTED")) {
                     // Do Something
