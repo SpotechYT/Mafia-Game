@@ -75,7 +75,6 @@ public class SettingPanel extends JPanel {
         centerPanel.add(rightPanel);
 
         add(centerPanel, BorderLayout.CENTER);
-
         
         nameButton.addActionListener(e -> {
             rightPanel.removeAll();
@@ -83,6 +82,7 @@ public class SettingPanel extends JPanel {
             nameTextPane.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
             nameTextPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
             nameTextPane.setMinimumSize(new Dimension(Integer.MAX_VALUE, 30));
+            JoinRoom.applyColor(nameTextPane);
             rightPanel.add(nameTextPane);
             JButton newName = new JButton("Change");
             newName.addActionListener(ev -> {
@@ -99,6 +99,14 @@ public class SettingPanel extends JPanel {
             rightPanel.revalidate();
             rightPanel.repaint();
 
+            nameTextPane.addActionListener(f -> {
+                String name = nameTextPane.getText();
+                Driver.setPlayerName(name);
+                //code to change the name
+                resetSettings();
+                nameTextPane.setText("");
+            });
+
         });
         
         generateButton.addActionListener(e -> {
@@ -111,6 +119,7 @@ public class SettingPanel extends JPanel {
             scenarioTextArea.setPreferredSize(new Dimension(Integer.MAX_VALUE, 300));
             scenarioTextArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
             scenarioTextArea.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
+            JoinRoom.applyColor(scenarioTextArea);
             rightPanel.add(scenarioTextArea);
 
             JButton generate = new JButton("Back");
@@ -150,7 +159,9 @@ public class SettingPanel extends JPanel {
 
     public void resetSettings(){
         rightPanel.removeAll();
-        rightPanel.add(new JLabel("Click on a setting"), BorderLayout.NORTH);
+        JLabel label = new JLabel("Click on a setting");
+        label.setForeground(Color.WHITE);
+        rightPanel.add(label, BorderLayout.NORTH);
         rightPanel.revalidate();
         rightPanel.repaint();
     }

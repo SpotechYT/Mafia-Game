@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
@@ -23,11 +24,16 @@ public class GamePanel extends JPanel {
     public static DefaultListModel<String> chatListModel;
     public static JList<String> chatList;
     public JButton chatButton;
+    public static JButton kickButton;
+    public static ImageIcon kickIcon;
+    public static ImageIcon kickIcon2;
+    public static String prevMode;
 
-    public static JLabel gameText;
+    public static JTextArea gameText;
     public static JLabel roleText;
 
     public static JPanel rightPanel;
+    public static JPanel brPanel;
 
     private static Game game = Driver.getGame();
 
@@ -64,8 +70,18 @@ public class GamePanel extends JPanel {
         chatField = new JTextField();
         chatField.setText("Type your message here...");
         chatField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        JoinRoom.applyColor(chatField);
+        JoinRoom.applyColor(chatList);
+        JScrollPane chatScrollPane = new JScrollPane(chatList);
+        JoinRoom.applyColor(chatScrollPane);
         leftPanel.add(chatField);
-        leftPanel.add(new JScrollPane(chatList), BorderLayout.CENTER);
+        leftPanel.add(chatScrollPane, BorderLayout.CENTER);
+
+        JButton voiceChatButton = new JButton("Start Voice Chat");
+        voiceChatButton.setBackground(Color.black);
+        voiceChatButton.setForeground(Color.white);
+        voiceChatButton.setPreferredSize(new Dimension(160, 40));
+        leftPanel.add(voiceChatButton);
 
         chatButton = new JButton();
         ImageIcon chatIcon = new ImageIcon("Graphics/send.png");
@@ -74,14 +90,43 @@ public class GamePanel extends JPanel {
         leftPanel.add(chatButton, BorderLayout.SOUTH);
 
         mainPanel.add(leftPanel);
+        kickButton = new JButton();
+        kickIcon = new ImageIcon("Graphics/kick.png");
+        kickIcon2 = new ImageIcon("Graphics/selectPlayer.png");
+        kickButton.setIcon(kickIcon);
+        kickButton.setBorder(null);
+        kickButton.setBackground(Color.black);
 
-        rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
+
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        
+        JPanel trPanel = new JPanel();
+        trPanel.setLayout(new BoxLayout(trPanel, BoxLayout.Y_AXIS));
+        trPanel.setBackground(Color.BLACK);
+
+        brPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        brPanel.setBackground(Color.BLACK);
+
         roleText = new JLabel("No Role Assigned");
-        rightPanel.add(gameText);
-        gameText = new JLabel("Waiting for other players to join...");
-        rightPanel.add(gameText);
+        roleText.setForeground(Color.WHITE);
+        trPanel.add(roleText);
+
+        // Use JTextArea for wrapping
+        gameText = new JTextArea("Waiting for other players to join...");
+        gameText.setLineWrap(true);
+        gameText.setWrapStyleWord(true);
+        gameText.setEditable(false);
+        gameText.setFocusable(false);
+        gameText.setOpaque(false); // Transparent background
+        gameText.setForeground(Color.WHITE);
+        gameText.setMaximumSize(new Dimension(300, 100)); // Limit width so it wraps
+
+        trPanel.add(gameText);
+
         updatePlayers();
 
+        rightPanel.add(trPanel);
+        rightPanel.add(brPanel);
         mainPanel.add(rightPanel);
 
         // // Create the bottom panel for game controls
@@ -98,23 +143,57 @@ public class GamePanel extends JPanel {
         // Add bottom panel to the bottom (SOUTH) of the main panel
         //add(bottomPanel, BorderLayout.SOUTH);
 
-
         chatButton.addActionListener(e -> {
             // This is your function body
             sendChatMessage(chatField.getText());
+            chatField.setText(""); // Clear the chat field after sending
         });
 
         backButton.addActionListener(e -> {
             // This is your function body
             leaveRoom();
         });
+        kickButton.addActionListener(e -> {
+            prevMode = game.getCurrentMode();
+            kickButton.setIcon(kickIcon2);
+            game.setCurrentMode("KICK");
+        });
 
-        // Player Buttons
+        // Replace VK_YOUR_KEY with the desired key code, e.g., VK_A for 'A' key
+        chatField.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                chatField.setText(""); // Clear the chat field when clicked
+            }
+        });
+        chatField.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                    sendChatMessage(chatField.getText());
+                    chatField.setText(""); // Clear the chat field after sending
+                }
+            }
+        });
+        voiceChatButton.addActionListener(e -> {
+            if (game.isVoiceChatEnabled()) {
+                game.stopVoiceChat(Driver.getPlayerName());
+                voiceChatButton.setText("Start Voice Chat");
+            } else {
+                game.startVoiceChat(Driver.getPlayerName());
+                voiceChatButton.setText("Stop Voice Chat");
+            }
+        });
     }
 
     public static void updatePlayers() {
+        // Call the method with the right panel
+        addPlayers(brPanel);
+    }
+
+    public static void addPlayers(JPanel thePanel) {
         // remove all existing buttons from the right panel
-        rightPanel.removeAll();
+        thePanel.removeAll();
 
         // add the players to the right panel
         for (String player : Driver.getGame().getPlayers().split("\n")) {
@@ -132,12 +211,14 @@ public class GamePanel extends JPanel {
                     case "KICK":
                         // If in kicking mode, send a kick request for the player
                         game.contactAllPlayers("KICK:" + player);
+                        kickButton.setIcon(kickIcon); // Reset the kick button icon
+                        game.setCurrentMode(prevMode); // Reset to previous mode after kick
                         break;
-                    case "CHOSE_SAVE":
+                    case "CHOOSE_SAVE":
                         // If in choose save mode, send a save request for the player
                         game.contactAllPlayers("SAVE:" + player);
                         break;
-                    case "CHOSE_VICTIM":
+                    case "CHOOSE_VICTIM":
                         // If in choose victim mode, send a victim request for the player
                         game.contactAllPlayers("VICTIM:" + player);
                         break;
@@ -147,12 +228,13 @@ public class GamePanel extends JPanel {
                 }
             });
 
-            rightPanel.add(playerButton);
+            thePanel.add(playerButton);
         }
+        rightPanel.add(kickButton);
 
         // Refresh the panel after adding components
-        rightPanel.revalidate();
-        rightPanel.repaint();
+        thePanel.revalidate();
+        thePanel.repaint();
     }    
 
     public static void setGameText(String text) {

@@ -16,6 +16,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
@@ -27,6 +28,7 @@ public class JoinRoom extends JPanel {
 
     public DefaultListModel<String> roomListModel;
     public JList<String> roomList;
+    public JScrollPane roomScrollPane;
     public JButton refreshButton;
 
     public JTextField roomNameField;
@@ -74,7 +76,6 @@ public class JoinRoom extends JPanel {
 
         roomListModel = new DefaultListModel<>();
         roomList = new JList<>(roomListModel);
-
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         TitledBorder border = BorderFactory.createTitledBorder("Available Rooms");
         border.setTitleColor(Color.WHITE);
@@ -82,11 +83,15 @@ public class JoinRoom extends JPanel {
         ipAdField = new JTextField();
         ipAdField.setText("Enter IP address");
         ipAdField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        applyColor(ipAdField);
         JLabel ipAdLabel = new JLabel("IP address:");
         ipAdLabel.setForeground(Color.WHITE);
         leftPanel.add(ipAdLabel);
         leftPanel.add(ipAdField);
-        leftPanel.add(new JScrollPane(roomList), BorderLayout.CENTER);
+        roomScrollPane = new JScrollPane(roomList);
+        applyColor(roomList);
+        applyColor(roomScrollPane);
+        leftPanel.add(roomScrollPane, BorderLayout.CENTER);
 
         refreshButton = new JButton();
         ImageIcon refreshIcon = new ImageIcon("Graphics/connect.png");
@@ -121,7 +126,8 @@ public class JoinRoom extends JPanel {
         playerList = new JList<>(playerListModel);
         playerScrollPane = new JScrollPane(playerList);
         playerScrollPane.setPreferredSize(new Dimension(200, 150));
-
+        applyColor(playerList);
+        applyColor(playerScrollPane);
         JLabel playersInRoom = new JLabel("Players in Room:");
         playersInRoom.setForeground(Color.WHITE);
         rightPanel.add(playersInRoom);
@@ -136,6 +142,7 @@ public class JoinRoom extends JPanel {
         ImageIcon kickIcon = new ImageIcon("Graphics/kick.png");
         kickButton.setIcon(kickIcon);
         kickButton.setBackground(Color.black);
+        kickButton.setBorder(null);
 
 
         rightPanel.add(Box.createVerticalStrut(10));
@@ -160,6 +167,11 @@ public class JoinRoom extends JPanel {
         backButton.addActionListener(e -> {
             // This is your function body
             game.leaveRoom();
+        });
+
+        ipAdField.addActionListener(e -> {
+            onRefreshRooms();
+            ipAdField.setText("");
         });
 
         kickButton.addActionListener(e -> {
@@ -250,8 +262,27 @@ public class JoinRoom extends JPanel {
         rightPanel.add(Box.createVerticalStrut(10));
         rightPanel.add(startGameButton);
         rightPanel.add(Box.createVerticalStrut(20));
-        rightPanel.add(Box.createVerticalGlue());
+        rightPanel.add(Box.createVerticalGlue());   
+    }
 
-        
+    public static void applyColor(JScrollPane scrollPane) {
+        scrollPane.setBackground(Color.GRAY);
+        scrollPane.setForeground(Color.WHITE);
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+    }
+    public static void applyColor(JTextField textField) {
+        textField.setBackground(Color.GRAY);
+        textField.setForeground(Color.WHITE);
+        textField.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+    }
+    public static void applyColor(JList<String> list) {
+        list.setBackground(Color.GRAY);
+        list.setForeground(Color.WHITE);
+        list.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+    }
+    public static void applyColor(JTextArea textArea) {
+        textArea.setBackground(Color.GRAY);
+        textArea.setForeground(Color.WHITE);
+        textArea.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
     }
 }
