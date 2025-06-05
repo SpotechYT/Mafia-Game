@@ -37,18 +37,21 @@ public class VoiceChat {
         running.set(true);
 
         AudioFormat format = getAudioFormat();
+        System.out.println("Audio format: " + format);
 
         // Setup microphone
         DataLine.Info micInfo = new DataLine.Info(TargetDataLine.class, format);
         microphone = (TargetDataLine) AudioSystem.getLine(micInfo);
         microphone.open(format);
         microphone.start();
+        System.out.println("Microphone opened: " + microphone.getLineInfo());
 
         // Setup speakers
         DataLine.Info speakerInfo = new DataLine.Info(SourceDataLine.class, format);
         speakers = (SourceDataLine) AudioSystem.getLine(speakerInfo);
         speakers.open(format);
         speakers.start();
+        System.out.println("Speakers opened: " + speakers.getLineInfo());
 
         socket = new DatagramSocket(PORT);
 
@@ -69,6 +72,7 @@ public class VoiceChat {
                             if(!ip.equals(Driver.getYourIp())) { // Skip own IP
                                 DatagramPacket packet = new DatagramPacket(buffer, bytesRead, InetAddress.getByName(ip), PORT);
                                 socket.send(packet);
+                                //System.out.println("Sent packet to " + ip + " with size: " + bytesRead);
                             }
                         }
                     } catch (IOException e) {
@@ -85,6 +89,7 @@ public class VoiceChat {
             while (running.get()) {
                 try {
                     socket.receive(packet);
+                    //System.out.println("Received packet from " + packet.getAddress().getHostAddress() + " with size: " + packet.getLength());
                     ByteArrayInputStream bais = new ByteArrayInputStream(packet.getData(), 0, packet.getLength());
                     int count;
                     byte[] playBuffer = new byte[BUFFER_SIZE];
