@@ -407,9 +407,10 @@ public class Game {
                 }
                 if(request.startsWith("CHAT:")) {
                     String chatMessage = request.substring(5);
-                    GamePanel.chatListModel.addElement(chatMessage);
-                    // Scroll to the bottom of the chat list
-                    GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
+                    // GamePanel.chatListModel.addElement(chatMessage);
+                    // // Scroll to the bottom of the chat list
+                    // GamePanel.chatList.ensureIndexIsVisible(GamePanel.chatListModel.getSize() - 1);
+                    GamePanel.chatTextArea.append(chatMessage + "\n");
                 }
                 if(request.startsWith("KICK:")) {
                     String playerToKick = request.substring(5);

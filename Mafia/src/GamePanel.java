@@ -23,6 +23,7 @@ public class GamePanel extends JPanel {
     public JTextField chatField;
     public static DefaultListModel<String> chatListModel;
     public static JList<String> chatList;
+    public static JTextArea chatTextArea;
     public JButton chatButton;
     public static JButton kickButton;
     public static ImageIcon kickIcon;
@@ -73,9 +74,18 @@ public class GamePanel extends JPanel {
         chatField.setText("Type your message here...");
         chatField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         JoinRoom.applyColor(chatField);
-        JoinRoom.applyColor(chatList);
-        JScrollPane chatScrollPane = new JScrollPane(chatList);
+
+        // Use JTextArea for chat display to support text wrapping
+        chatTextArea = new JTextArea();
+        chatTextArea.setEditable(false);
+        chatTextArea.setLineWrap(true);
+        chatTextArea.setWrapStyleWord(true);
+        JoinRoom.applyColor(chatTextArea);
+        chatTextArea.setFont(chatList.getFont());
+        JScrollPane chatScrollPane = new JScrollPane(chatTextArea);
         JoinRoom.applyColor(chatScrollPane);
+
+        // Optionally, keep chatList for compatibility, but update chatTextArea when adding messages
         leftPanel.add(chatField);
         leftPanel.add(chatScrollPane, BorderLayout.CENTER);
 
