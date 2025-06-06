@@ -35,6 +35,7 @@ public class GamePanel extends JPanel {
     public static JPanel rightPanel;
     public static JPanel brPanel;
     public static JPanel bottomPanel;
+    public static JPanel trPanel;
 
     private static Game game = Driver.getGame();
 
@@ -97,7 +98,7 @@ public class GamePanel extends JPanel {
 
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         
-        JPanel trPanel = new JPanel();
+        trPanel = new JPanel();
         trPanel.setLayout(new BoxLayout(trPanel, BoxLayout.Y_AXIS));
         trPanel.setBackground(Color.BLACK);
 
@@ -192,18 +193,25 @@ public class GamePanel extends JPanel {
 
     public static void updatePlayers() {
         // Call the method with the right panel
+        if(game.getDead().contains(Driver.getPlayerName())) {
+            // If the player is dead, show a message and return
+            gameText.setText("You are dead. You cannot interact with players.");
+            gameText.setForeground(Color.RED);
+            trPanel.revalidate();
+            trPanel.repaint();
+            game.setCurrentMode("DEAD");
+        }
         addPlayers(brPanel);
     }
 
     public static void addPlayers(JPanel thePanel) {
         // remove all existing buttons from the right panel
         thePanel.removeAll();
-
+        
         // add the players to the right panel
         for (String player : Driver.getGame().getPlayers().split("\n")) {
             if(game.getDead().contains(player)) {
                 // If the player is dead, skip adding them
-                game.setCurrentMode("DEAD");
                 continue;
             }
             JButton playerButton = new JButton(player);
