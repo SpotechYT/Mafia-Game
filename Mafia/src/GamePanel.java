@@ -203,8 +203,6 @@ public class GamePanel extends JPanel {
         for (String player : Driver.getGame().getPlayers().split("\n")) {
             if(game.getDead().contains(player)) {
                 // If the player is dead, skip adding them
-                brPanel.removeAll();
-                kickButton.setVisible(false); // Remove kick button if player is dead
                 game.setCurrentMode("DEAD");
                 continue;
             }
