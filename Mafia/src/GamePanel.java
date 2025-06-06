@@ -265,6 +265,7 @@ public class GamePanel extends JPanel {
 
     public void leaveRoom() {
         game.leaveRoom();
+        game.contactAllPlayers("PLAYER_LEFT");
         sendServerMessage(Driver.getPlayerName() + " has left the room.");
     }
 }

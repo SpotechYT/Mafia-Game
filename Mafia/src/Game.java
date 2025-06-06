@@ -376,12 +376,18 @@ public class Game {
                     }
                 }
                 if(request.equals("PLAYER_LEFT")) {
-                    String playerName = players.get(senderIP);
+                    String playerName = getKeyByValue(players, senderIP);
                     players.remove(playerName);
                     try{
                         roles.remove(playerName);
                     } catch (Exception e) {
                         System.out.println("No role assigned to player: " + playerName);
+                    }
+                    if(Driver.getPlayerName().equals(playerName)) {
+                        leaveRoom();
+                        Driver.showJoinRoom();
+                        JoinRoom.clearPlayerList();
+                        GamePanel.updatePlayers();
                     }
                     JoinRoom.removePlayerFromList(playerName);
                     GamePanel.updatePlayers();
@@ -497,7 +503,6 @@ public class Game {
             voiceChats.clear();
             JoinRoom.clearPlayerList();
             contactAllPlayers("PLAYER_LEFT");
-
             return "You have left the room.";
         } else {
          return "You are not in a room.";
