@@ -492,7 +492,9 @@ public class Game {
                     } catch (Exception e) {
                         System.out.println("No role assigned to player: " + deadPlayer);
                     }
-                    deadPlayers.add(deadPlayer);
+                    if(Driver.getPlayerName().equals(deadPlayer)) {
+                        deadPlayers.add(deadPlayer);
+                    }
                     GamePanel.updatePlayers();
                 }
             }
