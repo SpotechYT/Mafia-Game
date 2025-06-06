@@ -17,6 +17,8 @@ public class Game {
     private HashMap<String, String> votes = new HashMap<>();
     // Player, VoiceChat
     private HashMap<String, VoiceChat> voiceChats = new HashMap<>();
+    // Player, Dead
+    private ArrayList<String> deadPlayers = new ArrayList<>();
 
     // Game variables
     private String victim;
@@ -231,7 +233,7 @@ public class Game {
         contactAllPlayers("CHAT:" + story);
         // Kill the player if they were not saved
         if (!victim.equals(savedPlayer)) {
-            contactAllPlayers("KICK:" + victim);
+            contactAllPlayers("DEAD:" + victim);
         }
 
         try {
@@ -284,7 +286,7 @@ public class Game {
         if (mostVotedPlayer != null) {
             contactAllPlayers("CHAT:" + mostVotedPlayer + " has been voted out by the town. " + mostVotedPlayer + " was a " + roles.get(mostVotedPlayer) + "!");
             System.out.println("Player " + mostVotedPlayer + " has been voted out.");
-            contactAllPlayers("KICK:" + mostVotedPlayer);
+            contactAllPlayers("DEAD:" + mostVotedPlayer);
         } else {
             contactAllPlayers("CHAT: No player was voted out?");
             System.out.println("No player was voted out.");
@@ -482,6 +484,17 @@ public class Game {
                     String gameOverMessage = request.substring(9);
                     GamePanel.setGameText(gameOverMessage);
                 }
+                if(request.startsWith("DEAD:")) {
+                    String deadPlayer = request.substring(5);
+                    // Remove the player from the game
+                    try {
+                        roles.remove(deadPlayer);
+                    } catch (Exception e) {
+                        System.out.println("No role assigned to player: " + deadPlayer);
+                    }
+                    deadPlayers.add(deadPlayer);
+                    GamePanel.updatePlayers();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -585,6 +598,10 @@ public class Game {
 
     public void setVoiceChatEnabled(boolean voiceChatEnabled) {
         this.voiceChatEnabled = voiceChatEnabled;
+    }
+
+    public ArrayList<String> getDead() {
+        return deadPlayers;
     }
     
 }

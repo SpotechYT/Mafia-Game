@@ -34,6 +34,7 @@ public class GamePanel extends JPanel {
 
     public static JPanel rightPanel;
     public static JPanel brPanel;
+    public static JPanel bottomPanel;
 
     private static Game game = Driver.getGame();
 
@@ -126,7 +127,7 @@ public class GamePanel extends JPanel {
         mainPanel.add(rightPanel);
 
         // // Create the bottom panel for game controls
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
         // Buttons to add: leave room, vote kick
         bottomPanel.setBackground(java.awt.Color.BLACK);
@@ -200,9 +201,15 @@ public class GamePanel extends JPanel {
 
         // add the players to the right panel
         for (String player : Driver.getGame().getPlayers().split("\n")) {
+            if(game.getDead().contains(player)) {
+                // If the player is dead, skip adding them
+                brPanel.removeAll();
+                bottomPanel.remove(kickButton); // Remove kick button if player is dead
+                continue;
+            }
             JButton playerButton = new JButton(player);
             playerButton.setPreferredSize(new java.awt.Dimension(150, 50));
-
+            
             playerButton.addActionListener(e -> {
                 System.out.println("Clicked on player: " + player);
                 String currentMode = game.getCurrentMode();
