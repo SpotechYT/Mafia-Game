@@ -204,7 +204,8 @@ public class GamePanel extends JPanel {
             if(game.getDead().contains(player)) {
                 // If the player is dead, skip adding them
                 brPanel.removeAll();
-                bottomPanel.remove(kickButton); // Remove kick button if player is dead
+                kickButton.setVisible(false); // Remove kick button if player is dead
+                game.setCurrentMode("DEAD");
                 continue;
             }
             JButton playerButton = new JButton(player);
@@ -234,6 +235,10 @@ public class GamePanel extends JPanel {
                         // If in choose victim mode, send a victim request for the player
                         game.contactAllPlayers("VICTIM:" + player);
                         game.setCurrentMode("NONE");
+                        break;
+                    case "DEAD":
+                        // If in dead mode, do nothing or show a message
+                        System.out.println("Cannot interact when dead.");
                         break;
                     default:
                         // Default action can be defined here if needed
